@@ -49,6 +49,7 @@ const Login = () => {
       setIsLoading(true);
 
       try {
+        // Use the full URL to ensure we're connecting to the right server
         const res = await axios.post("http://localhost:3000/api/auth/admin/login", credentials);
 
         const { token, admin } = res.data;
@@ -60,6 +61,11 @@ const Login = () => {
 
       } catch (error) {
         console.error("Login failed:", error);
+
+        if (error.message === "Network Error") {
+          setErrors({ auth: "Cannot connect to server. Please make sure the backend server is running." });
+          return;
+        }
 
         if (error.response?.data?.message?.includes("jwt expired")) {
           localStorage.removeItem("adminToken");
