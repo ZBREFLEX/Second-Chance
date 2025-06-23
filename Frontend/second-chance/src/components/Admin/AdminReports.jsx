@@ -36,7 +36,7 @@ const AdminReports = () => {
   /* ─────────────────────────────── load data */
   const loadReports = async () => {
     try {
-      const { data } = await axios.get("http://localhost:3000/api/admin/reports");
+      const { data } = await axios.get("http://localhost:5000/api/admin/reports");
       setReportsData(data);
     } catch (err) {
       console.error(err);
@@ -53,7 +53,7 @@ const AdminReports = () => {
     try {
       await Promise.all(
         selectedReports.map((id) =>
-          axios.put(`http://localhost:3000/api/admin/reports/${id}/status`, {
+          axios.put(`http://localhost:5000/api/admin/reports/${id}/status`, {
             status: newStatus,
           })
         )
@@ -71,7 +71,7 @@ const AdminReports = () => {
     try {
       await Promise.all(
         selectedReports.map((id) =>
-          axios.delete(`http://localhost:3000/api/admin/reports/${id}`)
+          axios.delete(`http://localhost:5000/api/admin/reports/${id}`)
         )
       );
       loadReports();
@@ -256,7 +256,7 @@ const AdminReports = () => {
                   <th onClick={()=>handleSort("location")}>Location {sortBy==="location" && (sortOrder==="asc"?"↑":"↓")}</th>
                   <th onClick={()=>handleSort("type")}>Type {sortBy==="type" && (sortOrder==="asc"?"↑":"↓")}</th>
 
-                  {/* comment out these two lines if you don’t have severity in DB
+                  {/* comment out these two lines if you don't have severity in DB
                   <th onClick={()=>handleSort("severity")}>Severity {sortBy==="severity" && (sortOrder==="asc"?"↑":"↓")}</th>
                   */}
 

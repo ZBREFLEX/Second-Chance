@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import "./css/Auth.css"
+import axios from "axios"
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -44,45 +45,32 @@ const Register = () => {
   }
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  if (validateForm()) {
-    setIsLoading(true);
+    if (validateForm()) {
+      setIsLoading(true);
 
-    try {
-      const response = await fetch("http://localhost:3000/api/auth/admin/register", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify({
-    username: formData.username,
-    email: formData.email,
-    password: formData.password
-  })
-});
+      try {
+        const response = await axios.post("http://localhost:5000/api/auth/admin/register", {
+          username: formData.username,
+          email: formData.email,
+          password: formData.password
+        });
 
+        const data = await response.data;
 
-      const data = await response.json();
-
-      if (response.ok) {
-        navigate("/admin/login");
-      } else {
-        setErrors({ general: data.message || "Registration failed." });
+        if (response.status === 200 || response.status === 201) {
+          navigate("/admin/login");
+        } else {
+          setErrors({ general: data.message || "Registration failed." });
+        }
+      } catch (error) {
+        setErrors({ general: error.response?.data?.message || "Server error. Please try again later." });
+      } finally {
+        setIsLoading(false);
       }
-    } catch (error) {
-      setErrors({ general: "Server error. Please try again later." });
-    } finally {
-      setIsLoading(false);
     }
-  }
-
-
-  // Add `role: "admin"` in the POST body
-
-
-};
-
+  };
 
   return (
     <div className="auth-container">

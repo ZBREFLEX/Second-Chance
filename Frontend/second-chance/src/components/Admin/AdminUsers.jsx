@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import axios from "axios";
 import {
   Users,
   Search,
@@ -58,12 +59,16 @@ const AdminUsers = () => {
   const loadUsers = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch(
-        `http://localhost:3000/api/admin/users?${buildQuery()}`,
-        { cache: "no-store" }
+      const res = await axios.get(
+        `http://localhost:5000/api/admin/users?${buildQuery()}`,
+        { 
+          headers: { 
+            Authorization: `Bearer ${localStorage.getItem("adminToken")}` 
+          }
+        }
       );
       if (!res.ok) throw new Error("Failed to load users");
-      const data = await res.json();
+      const data = res.data;
       setUsers(data.users);
       setTotalUsers(data.total ?? data.users.length);
       setError(null);
@@ -88,10 +93,14 @@ const AdminUsers = () => {
 
   const bulkUpdateStatus = async (status) => {
     try {
-      await fetch("http://localhost:3000/api/admin/users/bulk-status", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ids: selectedUsers, status }),
+      await axios.put("http://localhost:5000/api/admin/users/bulk-status", {
+        ids: selectedUsers, 
+        status
+      }, {
+        headers: { 
+          Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+          "Content-Type": "application/json"
+        }
       });
       setSelectedUsers([]);
       loadUsers();
@@ -107,10 +116,12 @@ const AdminUsers = () => {
     if (!ok) return;
 
     try {
-      await fetch("http://localhost:3000/api/admin/users", {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ids: selectedUsers }),
+      await axios.delete("http://localhost:5000/api/admin/users", {
+        headers: { 
+          Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+          "Content-Type": "application/json"
+        },
+        data: { ids: selectedUsers }
       });
       setSelectedUsers([]);
       loadUsers();

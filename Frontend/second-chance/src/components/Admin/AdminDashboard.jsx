@@ -53,8 +53,8 @@ const AdminDashboard = () => {
     const headers = { headers: { Authorization: `Bearer ${token}` } };
 
     Promise.all([
-      axios.get("http://localhost:3000/api/user-stats", headers),
-      axios.get("http://localhost:3000/api/reports/recent", headers),
+      axios.get("http://localhost:5000/api/user-stats", headers),
+      axios.get("http://localhost:5000/api/reports/recent", headers),
     ])
       .then(([userRes, reportRes]) => {
         setTotalUsers(userRes.data.totalUsers);
