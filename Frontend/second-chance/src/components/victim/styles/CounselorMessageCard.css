@@ -1,0 +1,167 @@
+.counselor-message-card {
+  background-color: white;
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+  padding: var(--card-spacing);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  height: 100%;
+}
+
+.counselor-message-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.counselor-message-header h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.counselor-name {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.counselor-message-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  flex: 1;
+}
+
+.counselor-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.counselor-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.counselor-details h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.counselor-details p {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.last-message {
+  background-color: #f3f4f6;
+  border-radius: var(--card-radius);
+  padding: 1rem;
+}
+
+.message-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-bottom: 0.25rem;
+}
+
+.message-text {
+  font-size: 0.875rem;
+  color: var(--text-primary);
+}
+
+.quick-message-form {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.quick-message-form input {
+  flex: 1;
+  padding: 0.75rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--card-radius);
+  font-size: 0.875rem;
+  background-color: #f3f4f6;
+}
+
+.quick-message-form input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+}
+
+.quick-message-form button {
+  padding: 0.75rem 1rem;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: var(--card-radius);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.quick-message-form button:hover {
+  background-color: var(--primary-hover);
+}
+
+.no-counselor {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 2rem 0;
+  color: var(--text-secondary);
+}
+
+.no-counselor svg {
+  color: #d1d5db;
+}
+
+.no-counselor p {
+  font-size: 0.875rem;
+  text-align: center;
+}
+
+.request-counselor-btn {
+  padding: 0.75rem 1.5rem;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: var(--card-radius);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.request-counselor-btn:hover {
+  background-color: var(--primary-hover);
+}
+
+.counselor-message-footer {
+  margin-top: auto;
+}
+
+.view-chat-btn {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: white;
+  color: var(--primary-color);
+  border: 1px solid var(--primary-color);
+  border-radius: var(--card-radius);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.view-chat-btn:hover {
+  background-color: rgba(99, 102, 241, 0.1);
+}

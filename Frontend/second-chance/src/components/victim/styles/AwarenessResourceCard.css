@@ -1,0 +1,115 @@
+.awareness-resource-card {
+  background-color: white;
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+  padding: var(--card-spacing);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  height: 100%;
+}
+
+.awareness-resource-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.awareness-resource-header h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.resource-count {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.awareness-resource-content {
+  flex: 1;
+  overflow: hidden;
+}
+
+.resource-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+.resource-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  background-color: #f9fafb;
+  border-radius: var(--card-radius);
+  transition: background-color 0.2s;
+}
+
+.resource-item:hover {
+  background-color: #f3f4f6;
+}
+
+.resource-info {
+  flex: 1;
+  min-width: 0; /* Ensures text truncation works */
+}
+
+.resource-info h4 {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.resource-meta {
+  display: flex;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.resource-type {
+  padding: 0.125rem 0.375rem;
+  background-color: rgba(99, 102, 241, 0.1);
+  color: var(--primary-color);
+  border-radius: 9999px;
+}
+
+.resource-link {
+  color: var(--text-secondary);
+  transition: color 0.2s;
+  flex-shrink: 0;
+}
+
+.resource-link:hover {
+  color: var(--primary-color);
+}
+
+.awareness-resource-footer {
+  margin-top: auto;
+}
+
+.view-all-resources-btn {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: white;
+  color: var(--primary-color);
+  border: 1px solid var(--primary-color);
+  border-radius: var(--card-radius);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.view-all-resources-btn:hover {
+  background-color: rgba(99, 102, 241, 0.1);
+}

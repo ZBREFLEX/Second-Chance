@@ -1,0 +1,38 @@
+.app-container {
+  display: flex;
+  min-height: 100vh;
+  position: relative; /* Add position relative */
+  overflow-x: hidden; /* Prevent horizontal scrolling */
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: margin-left 0.3s ease, width 0.3s ease; /* Add transition */
+}
+
+.content-area {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  background-color: #f8f9fa;
+}
+
+@media (max-width: 768px) {
+  .content-area {
+    padding: 15px;
+  }
+
+  .main-content {
+    margin-left: 0 !important;
+    width: 100% !important;
+  }
+}
+.apply-form,
+.apply-form label {
+  display: flex;
+  flex-direction: column;
+  gap: .75rem;
+}

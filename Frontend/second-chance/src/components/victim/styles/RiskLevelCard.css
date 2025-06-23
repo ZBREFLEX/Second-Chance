@@ -1,0 +1,75 @@
+.risk-level-card {
+  background-color: white;
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+  padding: var(--card-spacing);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  height: 100%;
+}
+
+.risk-level-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.risk-level-header h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.last-assessment {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.risk-level-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+}
+
+.risk-level-indicator {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.risk-message {
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  max-width: 80%;
+}
+
+.risk-level-footer {
+  margin-top: auto;
+}
+
+.take-assessment-btn {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: var(--card-radius);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.take-assessment-btn:hover {
+  background-color: var(--primary-hover);
+}

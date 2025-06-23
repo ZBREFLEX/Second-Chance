@@ -1,0 +1,605 @@
+.profile-page {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.profile-header {
+  background-color: var(--background-white);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+.profile-cover {
+  position: relative;
+  height: 200px;
+  overflow: hidden;
+}
+
+.profile-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.edit-cover-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.8);
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.edit-cover-btn:hover {
+  background-color: var(--background-white);
+}
+
+.profile-info {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0 24px 24px;
+  margin-top: -60px;
+  position: relative;
+}
+
+.profile-avatar {
+  position: relative;
+  margin-right: 24px;
+}
+
+.profile-avatar img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 4px solid var(--background-white);
+  background-color: var(--background-white);
+  object-fit: cover;
+}
+
+.edit-avatar-btn {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: var(--background-white);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.edit-avatar-btn:hover {
+  background-color: var(--background-light);
+}
+
+.profile-details {
+  flex: 1;
+  padding-top: 60px;
+}
+
+.profile-details h1 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+  color: var(--text-primary);
+}
+
+.profile-tagline {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  margin: 0 0 16px 0;
+}
+
+.profile-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.profile-meta span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.profile-actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 60px;
+}
+
+.edit-profile-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background-color: var(--primary-color);
+  color: var(--text-light);
+  border: none;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.edit-profile-btn:hover {
+  background-color: var(--primary-dark);
+}
+
+.profile-content {
+  background-color: var(--background-white);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+.profile-tabs {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid var(--border-color);
+  overflow-x: auto;
+}
+
+.profile-tabs button {
+  padding: 16px 24px;
+  background: none;
+  border: none;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  white-space: nowrap;
+  position: relative;
+}
+
+.profile-tabs button.active {
+  color: var(--primary-color);
+  font-weight: 500;
+}
+
+.profile-tabs button.active::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: var(--primary-color);
+}
+
+.profile-tab-content {
+  padding: 24px;
+}
+
+/* NGO Details Tab */
+.ngo-details {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.details-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.details-section h2 {
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.details-section p {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.mission-vision {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+}
+
+.mission h3,
+.vision h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin: 0 0 12px 0;
+}
+
+.focus-areas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.focus-area {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background-color: var(--background-light);
+  border-radius: 20px;
+  font-size: 0.875rem;
+  color: var(--text-primary);
+}
+
+.focus-area i {
+  color: var(--primary-color);
+}
+
+.contact-info {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.contact-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.contact-item i {
+  font-size: 1rem;
+  color: var(--primary-color);
+  margin-top: 2px;
+}
+
+.contact-item label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+}
+
+.contact-item p {
+  font-size: 0.875rem;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.social-media {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.social-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+
+.social-link:hover {
+  opacity: 0.9;
+}
+
+.social-link.facebook {
+  background-color: #3b5998;
+  color: white;
+}
+
+.social-link.twitter {
+  background-color: #1da1f2;
+  color: white;
+}
+
+.social-link.instagram {
+  background-color: #e1306c;
+  color: white;
+}
+
+.social-link.linkedin {
+  background-color: #0077b5;
+  color: white;
+}
+
+/* Team Members Tab */
+.team-members {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.team-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.team-header h2 {
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.add-member-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background-color: var(--primary-color);
+  color: var(--text-light);
+  border: none;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.add-member-btn:hover {
+  background-color: var(--primary-dark);
+}
+
+.team-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.team-member {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 16px;
+  background-color: var(--background-light);
+  border-radius: 8px;
+  position: relative;
+}
+
+.team-member img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.member-info {
+  flex: 1;
+}
+
+.member-info h3 {
+  font-size: 1rem;
+  font-weight: 500;
+  margin: 0 0 4px 0;
+  color: var(--text-primary);
+}
+
+.member-role {
+  font-size: 0.875rem;
+  color: var(--primary-color);
+  margin: 0 0 8px 0;
+}
+
+.member-bio {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin: 0 0 12px 0;
+}
+
+.member-contact {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.member-contact a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: var(--background-white);
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.member-contact a:hover {
+  background-color: var(--primary-color);
+  color: var(--text-light);
+}
+
+.member-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.member-actions button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 4px;
+  background-color: var(--background-white);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.member-actions .edit-btn:hover {
+  background-color: var(--info-color);
+  color: var(--text-light);
+}
+
+.member-actions .delete-btn:hover {
+  background-color: var(--danger-color);
+  color: var(--text-light);
+}
+
+/* Account Settings Tab */
+.account-settings {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.settings-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.settings-section h2 {
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.settings-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.settings-form .form-group {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.settings-form input {
+  flex: 1;
+}
+
+.change-btn {
+  padding: 8px 16px;
+  background-color: var(--background-light);
+  color: var(--text-secondary);
+  border: none;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.change-btn:hover {
+  background-color: #e0e0e0;
+}
+
+.notification-settings,
+.privacy-settings {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.notification-option,
+.privacy-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  background-color: var(--background-light);
+  border-radius: 8px;
+}
+
+.notification-option h3,
+.privacy-option h3 {
+  font-size: 1rem;
+  font-weight: 500;
+  margin: 0 0 4px 0;
+  color: var(--text-primary);
+}
+
+.notification-option p,
+.privacy-option p {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.toggle {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+}
+
+.toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: .4s;
+  border-radius: 24px;
+}
+
+.toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+}
+
+input:checked + .toggle-slider {
+  background-color: var(--primary-color);
+}
+
+input:checked + .toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+}
+

@@ -1,0 +1,94 @@
+/* Footer.css */
+.footer {
+  background-color: #0077b6;
+  color: white;
+  padding: 50px 20px 30px;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.footerContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.footerContent {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 40px;
+  margin-bottom: 30px;
+}
+
+.footerSection {
+  flex: 1 1 250px;
+}
+
+.footerTitle {
+  font-size: 18px;
+  margin-bottom: 15px;
+  color: #ffffff;
+}
+
+.footerText {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #e0e0e0;
+}
+
+.footerLinks {
+  list-style: none;
+  padding: 0;
+  font-size: 14px;
+}
+
+.footerLinks li {
+  margin-bottom: 8px;
+}
+
+.footerLinks a {
+  color: #ccefff;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.footerLinks a:hover {
+  color: #ffffff;
+}
+
+.footerBottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+  padding-top: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  font-size: 13px;
+  color: #cccccc;
+}
+
+.footerBottomLinks a {
+  margin-left: 20px;
+  color: #ccefff;
+  text-decoration: none;
+}
+
+.footerBottomLinks a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .footerContent {
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  .footerBottom {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 10px;
+  }
+
+  .footerBottomLinks a {
+    margin-left: 10px;
+  }
+}
