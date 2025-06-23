@@ -179,7 +179,7 @@ const AdminCounselors = () => {
     if (window.confirm("Are you sure you want to approve this counselor application?")) {
       setLoading(true)
       try {
-        await axios.put(`/api/counselors/${counselorId}/approve`, {}, getAuthHeader()) // API call to approve with auth
+        await axios.patch(`/api/counselors/${counselorId}/approve`, {}, getAuthHeader()) // API call to approve with auth
         loadCounselors() // Re-fetch data to update UI
         setSelectedCounselors((prev) => prev.filter((id) => id !== counselorId)) // Deselect if approved
       } catch (err) {
@@ -196,7 +196,7 @@ const AdminCounselors = () => {
     if (window.confirm("Are you sure you want to reject this counselor application?")) {
       setLoading(true)
       try {
-        await axios.put(`/api/counselors/${counselorId}/reject`, {}, getAuthHeader()) // API call to reject with auth
+        await axios.patch(`/api/counselors/${counselorId}/reject`, {}, getAuthHeader()) // API call to reject with auth
         loadCounselors() // Re-fetch data to update UI
         setSelectedCounselors((prev) => prev.filter((id) => id !== counselorId)) // Deselect if rejected
       } catch (err) {
@@ -358,9 +358,9 @@ const AdminCounselors = () => {
                 }}
               >
                 <option value="all">All Experience</option>
-                <option value="junior">Junior (&lt; 3 years)</option>
+                <option value="junior">Junior (< 3 years)</option>
                 <option value="mid">Mid (3-7 years)</option>
-                <option value="senior">Senior (&gt; 7 years)</option>
+                <option value="senior">Senior (> 7 years)</option>
               </select>
             </div>
 

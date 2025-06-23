@@ -56,7 +56,7 @@ exports.loginUser = async (req, res) => {
     const match = await bcrypt.compare(password, user[0].password);
     if (!match) return res.status(400).json({ message: 'Wrong password' });
 
-    const token = jwt.sign({ id: user[0].id, role: user[0].role }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({ id: user[0].id, role: user[0].role }, process.env.JWT_SECRET, { expiresIn: '24h' });
 
     res.status(200).json({ token, user: { id: user[0].id, role: user[0].role } });
   } catch (err) {
@@ -77,7 +77,7 @@ exports.loginAdmin = async (req, res) => {
     if (!match) return res.status(400).json({ message: 'Wrong password' }); // <--- Returns 400
 
     const token = jwt.sign({ id: admin[0].id, role: 'admin' }, process.env.JWT_SECRET, {
-      expiresIn: '1h',
+      expiresIn: '24h',
     });
 
     res.status(200).json({

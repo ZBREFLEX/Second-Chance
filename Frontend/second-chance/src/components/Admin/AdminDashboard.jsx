@@ -44,10 +44,10 @@ const AdminDashboard = () => {
         AUTH + DATA FETCH
   ──────────────────────── */
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("adminToken");
     console.log("Stored token:", token);
     if (!token) {
-      return navigate("/admin");
+      return navigate("/admin/login");
     }
 
     const headers = { headers: { Authorization: `Bearer ${token}` } };
@@ -63,7 +63,11 @@ const AdminDashboard = () => {
       })
       .catch((err) => {
         console.error("Dashboard fetch error:", err);
-        navigate("/admin/login");
+        if (err.response && (err.response.status === 401 || err.response.status === 403)) {
+          localStorage.removeItem("adminToken");
+          localStorage.removeItem("adminUser");
+          navigate("/admin/login");
+        }
       });
   }, [navigate]);
 

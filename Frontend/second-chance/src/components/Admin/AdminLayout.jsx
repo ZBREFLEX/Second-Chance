@@ -1,7 +1,7 @@
 "use client"
 
-import { useState } from "react"
-import { Link, useLocation } from "react-router-dom"
+import { useState, useEffect } from "react"
+import { Link, useLocation, useNavigate } from "react-router-dom"
 import {
   LayoutDashboard,
   Users,
@@ -23,6 +23,15 @@ const AdminLayout = ({ children }) => {
   const [notificationsOpen, setNotificationsOpen] = useState(false)
   const [profileOpen, setProfileOpen] = useState(false)
   const location = useLocation()
+  const navigate = useNavigate()
+
+  // Check if user is authenticated
+  useEffect(() => {
+    const token = localStorage.getItem("adminToken");
+    if (!token) {
+      navigate("/admin/login");
+    }
+  }, [navigate]);
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen)
@@ -41,14 +50,15 @@ const AdminLayout = ({ children }) => {
   const isActive = (path) => {
     return location.pathname === path
   }
+  
   const handleLogout = () => {
     // Clear all auth-related data from localStorage
-    localStorage.removeItem("userData")
-    localStorage.removeItem("token")
+    localStorage.removeItem("adminUser")
+    localStorage.removeItem("adminToken")
     localStorage.removeItem("selectedCounselor")
 
     // Navigate directly to the homepage/login page
-    navigate("../../login")
+    navigate("/admin/login")
   }
 
   const notifications = [
@@ -100,10 +110,10 @@ const AdminLayout = ({ children }) => {
             <HelpCircle size={20} />
             <span>Help & Support</span>
           </Link>
-          <Link to="/logout" className="logout-button">
+          <button onClick={handleLogout} className="logout-button">
             <LogOut size={20} />
             <span>Logout</span>
-          </Link>
+          </button>
         </div>
       </aside>
 
@@ -159,10 +169,10 @@ const AdminLayout = ({ children }) => {
                   <Link to="/admin/settings" className="dropdown-item">
                     Settings
                   </Link>
-                  <div className="dropdown-divider" onClick={handleLogout}></div>
-                  <Link to="/logout" className="dropdown-item">
+                  <div className="dropdown-divider"></div>
+                  <button onClick={handleLogout} className="dropdown-item">
                     Logout
-                  </Link>
+                  </button>
                 </div>
               )}
             </div>
