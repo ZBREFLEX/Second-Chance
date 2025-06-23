@@ -70,7 +70,7 @@ const AdminCounselors = () => {
       console.log("Frontend: Sending API request with params:", params); // Log params before sending
 
       // Make the API request with the Authorization header
-      const res = await axios.get("http://localhost:3000/api/counselors", {
+      const res = await axios.get("http://localhost:5000/api/counselors", {
         params,
         headers: {
           'Authorization': `Bearer ${token}` // Attach the JWT to the Authorization header
@@ -179,7 +179,7 @@ const AdminCounselors = () => {
     if (window.confirm("Are you sure you want to approve this counselor application?")) {
       setLoading(true)
       try {
-        await axios.patch(`http://localhost:3000/api/counselors/${counselorId}/approve`, {}, getAuthHeader()) // API call to approve with auth
+        await axios.patch(`http://localhost:5000/api/counselors/${counselorId}/approve`, {}, getAuthHeader()) // API call to approve with auth
         loadCounselors() // Re-fetch data to update UI
         setSelectedCounselors((prev) => prev.filter((id) => id !== counselorId)) // Deselect if approved
       } catch (err) {
@@ -196,7 +196,7 @@ const AdminCounselors = () => {
     if (window.confirm("Are you sure you want to reject this counselor application?")) {
       setLoading(true)
       try {
-        await axios.patch(`http://localhost:3000/api/counselors/${counselorId}/reject`, {}, getAuthHeader()) // API call to reject with auth
+        await axios.patch(`http://localhost:5000/api/counselors/${counselorId}/reject`, {}, getAuthHeader()) // API call to reject with auth
         loadCounselors() // Re-fetch data to update UI
         setSelectedCounselors((prev) => prev.filter((id) => id !== counselorId)) // Deselect if rejected
       } catch (err) {
@@ -213,7 +213,7 @@ const AdminCounselors = () => {
     if (window.confirm(`Are you sure you want to approve ${selectedCounselors.length} counselor applications?`)) {
       setLoading(true)
       try {
-        await axios.patch("http://localhost:3000/api/counselors/bulk", { ids: selectedCounselors, action: 'approve' }, getAuthHeader()) // Bulk API call with auth
+        await axios.patch("http://localhost:5000/api/counselors/bulk", { ids: selectedCounselors, action: 'approve' }, getAuthHeader()) // Bulk API call with auth
         loadCounselors() // Re-fetch data
         setSelectedCounselors([]) // Clear selections after bulk action
       } catch (err) {
@@ -230,7 +230,7 @@ const AdminCounselors = () => {
     if (window.confirm(`Are you sure you want to reject ${selectedCounselors.length} counselor applications?`)) {
       setLoading(true)
       try {
-        await axios.patch("http://localhost:3000/api/counselors/bulk", { ids: selectedCounselors, action: 'reject' }, getAuthHeader()) // Bulk API call with auth
+        await axios.patch("http://localhost:5000/api/counselors/bulk", { ids: selectedCounselors, action: 'reject' }, getAuthHeader()) // Bulk API call with auth
         loadCounselors() // Re-fetch data
         setSelectedCounselors([]) // Clear selections after bulk action
       } catch (err) {

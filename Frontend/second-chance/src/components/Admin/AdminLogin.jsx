@@ -49,8 +49,8 @@ const Login = () => {
       setIsLoading(true);
 
       try {
-        // Use the full URL to ensure we're connecting to the right server
-        const res = await axios.post("http://localhost:3000/api/auth/admin/login", credentials);
+        // Use the full URL with port 5000 instead of 3000
+        const res = await axios.post("http://localhost:5000/api/auth/admin/login", credentials);
 
         const { token, admin } = res.data;
 
@@ -63,7 +63,7 @@ const Login = () => {
         console.error("Login failed:", error);
 
         if (error.message === "Network Error") {
-          setErrors({ auth: "Cannot connect to server. Please make sure the backend server is running." });
+          setErrors({ auth: "Cannot connect to server. Please make sure the backend server is running on port 5000." });
           return;
         }
 
