@@ -358,9 +358,9 @@ const AdminCounselors = () => {
                 }}
               >
                 <option value="all">All Experience</option>
-                <option value="junior">Junior (< 3 years)</option>
+                <option value="junior">Junior (&lt; 3 years)</option>
                 <option value="mid">Mid (3-7 years)</option>
-                <option value="senior">Senior (> 7 years)</option>
+                <option value="senior">Senior (&gt; 7 years)</option>
               </select>
             </div>
 
