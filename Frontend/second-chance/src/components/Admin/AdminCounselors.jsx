@@ -443,8 +443,7 @@ const AdminCounselors = () => {
                         {getStatusIcon(counselor.status)} {counselor.status}
                       </span>
                     </td>
-                    <td>{new Date(counselor.created_at).toLocaleDateString()}</td>{" "}
-                    {/* Format date for display */}
+                    <td>{new Date(counselor.created_at).toLocaleDateString()}</td>
                     <td className="actions-cell">
                       <button className="table-action view" title="View Details">
                         <Eye size={16} />
