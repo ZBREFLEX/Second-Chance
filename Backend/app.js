@@ -24,7 +24,7 @@ const express = require('express');
   app.use('/api',usersRoutes)
   app.use('/api/reports', reportRoutes);
   app.use('/api/admin/reports', adminReportRoutes);  
-  app.use('/api/counselor', counselorRoutes);
+  app.use('/api/counselors', counselorRoutes);
   app.use("/api/admin/users", adminUserRoutes);
   app.use("/api", reportRoutes); 
   
