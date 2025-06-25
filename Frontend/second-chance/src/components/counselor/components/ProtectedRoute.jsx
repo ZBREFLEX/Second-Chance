@@ -9,7 +9,11 @@ const ProtectedRoute = ({ children }) => {
   useEffect(() => {
     (async () => {
       try {
+<<<<<<< HEAD
         // Axios hits http://localhost:5000/api/counselors/application-status
+=======
+        // Axios hits http://localhost:5000/api/counselor/profile
+>>>>>>> 9d9ad94 (updates code)
         // and returns JSON as { status: 'approved' | ... }
         const { data } = await API.get("/counselors/application-status");
         setOk(data.status === "approved");

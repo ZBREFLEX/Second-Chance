@@ -36,7 +36,7 @@ const handleStatusCheck = async (e) => {
   setChecking(true);
   setReportStatus(null);
   try {
-    const { data } = await axios.get(`http://localhost:3000/api/reports/status/${checkId}`);
+    const { data } = await axios.get(`http://localhost:000/api/reports/status/${checkId}`);
     setReportStatus(data);
   } catch (err) {
     setReportStatus({ error: err.response?.data?.message || "Report not found." });
@@ -56,7 +56,7 @@ const handleStatusCheck = async (e) => {
     setLoading(true);
     try {
       const { data } = await axios.post(
-        "http://localhost:3000/api/reports/anonymous",
+        "http://localhost:5000/api/reports/anonymous",
         {
           reportType:      formData.reportType,
           district:        formData.district,

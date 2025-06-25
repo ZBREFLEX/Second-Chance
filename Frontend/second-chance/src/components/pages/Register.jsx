@@ -26,7 +26,7 @@ const Register = () => {
       setLoading(true);
 
       // 👉 Replace this with your backend API
-      await axios.post("http://localhost:3000/api/auth/register", {
+      await axios.post("http://localhost:5000/api/auth/register", {
         username: name,
         email,
         password,

@@ -68,6 +68,7 @@ const AdminUsers = () => {
           }
         }
       );
+<<<<<<< HEAD
       
       if (response.data) {
         setUsers(response.data.users || []);
@@ -76,6 +77,13 @@ const AdminUsers = () => {
       } else {
         throw new Error("Failed to load users");
       }
+=======
+      if (res.status !== 200) throw new Error("Failed to load users");
+      const data = res.data;
+      setUsers(data.users);
+      setTotalUsers(data.total ?? data.users.length);
+      setError(null);
+>>>>>>> 9d9ad94 (updates code)
     } catch (e) {
       console.error("Error loading users:", e);
       setError(e.message || "Failed to load users");
