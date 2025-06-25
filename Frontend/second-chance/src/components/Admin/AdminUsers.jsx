@@ -59,21 +59,26 @@ const AdminUsers = () => {
   const loadUsers = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await axios.get(
+      const token = localStorage.getItem("adminToken");
+      const response = await axios.get(
         `http://localhost:5000/api/admin/users?${buildQuery()}`,
         { 
           headers: { 
-            Authorization: `Bearer ${localStorage.getItem("adminToken")}` 
+            Authorization: `Bearer ${token}` 
           }
         }
       );
-      if (!res.ok) throw new Error("Failed to load users");
-      const data = res.data;
-      setUsers(data.users);
-      setTotalUsers(data.total ?? data.users.length);
-      setError(null);
+      
+      if (response.data) {
+        setUsers(response.data.users || []);
+        setTotalUsers(response.data.total ?? response.data.users?.length || 0);
+        setError(null);
+      } else {
+        throw new Error("Failed to load users");
+      }
     } catch (e) {
-      setError(e.message);
+      console.error("Error loading users:", e);
+      setError(e.message || "Failed to load users");
     } finally {
       setLoading(false);
     }
@@ -134,8 +139,8 @@ const AdminUsers = () => {
  const filteredUsers = users.filter((user) => {
   const isNotAdmin = user.role !== "admin"      // 👈 this line
   const matchesSearch =
-    user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.email.toLowerCase().includes(searchTerm.toLowerCase())
+    user.username?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    user.email?.toLowerCase().includes(searchTerm.toLowerCase())
   const matchesRole = filterRole === "all" || user.role === filterRole
   const matchesStatus = filterStatus === "all" || user.status === filterStatus
 
@@ -321,42 +326,50 @@ const AdminUsers = () => {
             </thead>
 
             <tbody>
-              {currentUsers.map((u) => (
-                <tr key={u.id}>
-                  <td>
-                    <input
-                      type="checkbox"
-                      checked={selectedUsers.includes(u.id)}
-                      onChange={() => handleSelectUser(u.id)}
-                    />
-                  </td>
-                  <td>{u.id}</td>
-                  <td>{u.username}</td>
-                  <td>{u.email}</td>
-                  <td>
-                    <span className={`role-badge ${u.role}`}>
-                      {getRoleIcon(u.role)} {u.role}
-                    </span>
-                  </td>
-                  <td>
-                    <span className={`status-badge ${u.status}`}>
-                      {getStatusIcon(u.status)} {u.status}
-                    </span>
-                  </td>
-                  <td>{u.created_at}</td>
-                  <td className="actions-cell">
-                    <button className="table-action view">
-                      <Eye size={16} />
-                    </button>
-                    <button className="table-action edit">
-                      <Edit size={16} />
-                    </button>
-                    <button className="table-action delete">
-                      <Trash2 size={16} />
-                    </button>
+              {currentUsers.length > 0 ? (
+                currentUsers.map((u) => (
+                  <tr key={u.id}>
+                    <td>
+                      <input
+                        type="checkbox"
+                        checked={selectedUsers.includes(u.id)}
+                        onChange={() => handleSelectUser(u.id)}
+                      />
+                    </td>
+                    <td>{u.id}</td>
+                    <td>{u.username}</td>
+                    <td>{u.email}</td>
+                    <td>
+                      <span className={`role-badge ${u.role}`}>
+                        {getRoleIcon(u.role)} {u.role}
+                      </span>
+                    </td>
+                    <td>
+                      <span className={`status-badge ${u.status}`}>
+                        {getStatusIcon(u.status)} {u.status}
+                      </span>
+                    </td>
+                    <td>{u.created_at}</td>
+                    <td className="actions-cell">
+                      <button className="table-action view">
+                        <Eye size={16} />
+                      </button>
+                      <button className="table-action edit">
+                        <Edit size={16} />
+                      </button>
+                      <button className="table-action delete">
+                        <Trash2 size={16} />
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="8" className="no-data-found">
+                    No users found matching your criteria.
                   </td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
         </div>
@@ -364,9 +377,9 @@ const AdminUsers = () => {
         {/* ------------ pagination ------------ */}
         <div className="pagination">
           <div className="pagination-info">
-            Showing {indexOfFirst + 1}‑{Math.min(indexOfLast, sortedUsers.length)}
+            Showing {filteredUsers.length === 0 ? 0 : indexOfFirst + 1}‑{Math.min(indexOfLast, filteredUsers.length)}
             {" of "}
-            {sortedUsers.length} users{/* or use totalUsers from server */}
+            {filteredUsers.length} users{/* or use totalUsers from server */}
           </div>
           <div className="pagination-controls">
             <button
@@ -402,7 +415,7 @@ const AdminUsers = () => {
 
             <button
               className="pagination-button"
-              disabled={currentPage === totalPages}
+              disabled={currentPage === totalPages || totalPages === 0}
               onClick={() => setCurrentPage(currentPage + 1)}
             >
               <ChevronRight size={16} />
