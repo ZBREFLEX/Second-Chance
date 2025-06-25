@@ -27,7 +27,7 @@ const CounselorApply = () => {
     if (form.resume) body.append('resume', form.resume);
 
     try {
-      await API.post('/counselor/apply', body, {
+      await API.post('/counselors/apply', body, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       navigate('/counselor/application-status');

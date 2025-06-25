@@ -4,7 +4,7 @@ import axios from 'axios';
 const API = axios.create({
   baseURL:
     import.meta.env.VITE_API_URL      // let prod/staging override
-      || 'http://localhost:3000/api', // dev default
+      || 'http://localhost:5000/api', // dev default
   withCredentials: false,             // keep cookies off; we use JWT
 });
 

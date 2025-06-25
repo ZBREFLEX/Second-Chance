@@ -13,7 +13,7 @@ const ApplicationStatus = () => {
     (async () => {
       try {
         // Axios automatically sends the JWT (thanks to api.js interceptor)
-        const { data } = await API.get("/counselor/application-status");
+        const { data } = await API.get("/counselors/application-status");
         // Expected payload: { status: 'pending' | 'approved' | 'rejected' | 'not_applied' }
         setStatus(data.status || "none");
       } catch (err) {
@@ -56,7 +56,7 @@ const ApplicationStatus = () => {
     <Layout>
       <h2>No Application</h2>
       <p>
-        You haven’t applied yet.{" "}
+        You haven't applied yet.{" "}
         <a href="/counselor/counselorapply">Apply now →</a>
       </p>
     </Layout>

@@ -9,13 +9,13 @@ const ProtectedRoute = ({ children }) => {
   useEffect(() => {
     (async () => {
       try {
-        // Axios hits http://localhost:3000/api/counselor/profile
+        // Axios hits http://localhost:5000/api/counselors/application-status
         // and returns JSON as { status: 'approved' | ... }
-        const { data } = await API.get("/counselor/application-status");
+        const { data } = await API.get("/counselors/application-status");
         setOk(data.status === "approved");
       } catch (err) {
         console.error(err);
-        setOk(false);                   // treat any error as “not approved”
+        setOk(false);                   // treat any error as "not approved"
       }
     })();
   }, []);
