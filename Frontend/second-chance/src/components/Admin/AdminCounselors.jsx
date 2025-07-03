@@ -350,18 +350,19 @@ const AdminCounselors = () => {
 
             <div className="filter-select">
               <label>Experience:</label>
-              <select
-                value={filterExperience}
-                onChange={(e) => {
-                  setFilterExperience(e.target.value)
-                  setCurrentPage(1) // Reset page on filter change
-                }}
-              >
-                <option value="all">All Experience</option>
-                <option value="junior">Junior (< 3 years)</option>
-                <option value="mid">Mid (3-7 years)</option>
-                <option value="senior">Senior (> 7 years)</option>
-              </select>
+            <select
+  value={filterExperience}
+  onChange={(e) => {
+    setFilterExperience(e.target.value)
+    setCurrentPage(1) // Reset page on filter change
+  }}
+>
+  <option value="all">All Experience</option>
+  <option value="junior">Junior (&lt; 3 years)</option>
+  <option value="mid">Mid (3–7 years)</option>
+  <option value="senior">Senior (&gt; 7 years)</option>
+</select>
+
             </div>
 
             <button className="filter-button">
@@ -370,7 +371,7 @@ const AdminCounselors = () => {
           </div>
         </div>
 
-        {/* Counselors Table */}
+      
         <div className="counselors-table-container">
           <table className="counselors-table">
             <thead>

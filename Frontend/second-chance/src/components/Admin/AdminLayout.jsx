@@ -91,6 +91,10 @@ const AdminLayout = ({ children }) => {
             <Users size={20} />
             <span>Counselors</span>
           </Link>
+          <Link to="/admin/counselor" className={`nav-item ${isActive("/admin/counselor") ? "active" : ""}`}>
+            <Users size={20} />
+            <span>Victims</span>
+          </Link>
           <Link to="/admin/reports" className={`nav-item ${isActive("/admin/reports") ? "active" : ""}`}>
             <FileText size={20} />
             <span>Reports</span>

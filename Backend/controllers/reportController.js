@@ -133,8 +133,31 @@ const getRecentReports = async (req, res) => {
 // ──────────────────────────────────────────────────────────
 // Export the three controllers in ONE object
 // ──────────────────────────────────────────────────────────
+
+// stats of report
+const getReportStats = async (req, res) => {
+  try {
+    const [totalReportsRows] = await pool.query("SELECT COUNT(*) AS total FROM anonymous_reports");
+    const [activeCasesRows] = await pool.query("SELECT COUNT(*) AS active FROM anonymous_reports WHERE report_status = 'Active'");
+    const [recoveriesRows] = await pool.query("SELECT COUNT(*) AS recovered FROM anonymous_reports WHERE report_status = 'Recovered'");
+
+    res.json({
+      totalReports: totalReportsRows[0].total,
+      activeCases: activeCasesRows[0].active,
+      recoveries: recoveriesRows[0].recovered,
+    });
+  } catch (error) {
+    console.error("Error fetching report stats:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+// ──────────────────────────────────────────────────────────
+// Export the controllers in ONE object
+// ──────────────────────────────────────────────────────────
 module.exports = {
   submitAnonymousReport,
   getReportStatus,
   getRecentReports,
+  getReportStats, // ✅ include this here
 };

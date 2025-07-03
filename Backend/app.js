@@ -9,7 +9,9 @@ const express = require('express');
   const counselorRoutes = require('./routes/counselorRoutes');
   const adminUserRoutes = require("./routes/adminUserRoutes");
   const errorHandler    = require("./middleware/errorHandler");
+  const victimDetailsRoutes = require("./routes/victimDetails");
   const verifyToken = require("./middleware/verifyToken");
+  const recoveryRoutes =require("./routes/recoveryRoutes");
   dotenv.config();
   const app = express();
 
@@ -27,7 +29,8 @@ const express = require('express');
   app.use('/api/counselors', counselorRoutes);
   app.use("/api/admin/users", adminUserRoutes);
   app.use("/api", reportRoutes); 
-  
+  app.use("/api/victim-details", victimDetailsRoutes);
+  app.use("/api/recovery", recoveryRoutes);
   app.use(errorHandler);
   
 

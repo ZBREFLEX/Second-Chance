@@ -28,7 +28,8 @@ const Login = () => {
       const user = res.data.user;
 
       // ✅ Store in localStorage and context
-      localStorage.setItem("userData", JSON.stringify(user));
+     localStorage.setItem("user", JSON.stringify(user)); // ✅ Matches what your dashboard/checker reads
+
       localStorage.setItem("token", res.data.token || "mock-token"); // optional
       setUser(user); // ✅ update context
 

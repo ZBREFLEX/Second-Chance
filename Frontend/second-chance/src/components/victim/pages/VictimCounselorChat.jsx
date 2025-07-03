@@ -16,44 +16,47 @@ const CounselorChat = () => {
   })
   const messagesEndRef = useRef(null)
 
-  useEffect(() => {
-    // Get the selected counselor from localStorage
-    const fetchData = async () => {
-      setIsLoading(true)
+ useEffect(() => {
+  const fetchData = async () => {
+    setIsLoading(true)
 
-      try {
-        // Get selected counselor from localStorage
-        const selectedCounselor = JSON.parse(localStorage.getItem("selectedCounselor"))
-
-        if (!selectedCounselor) {
-          throw new Error("No counselor selected")
-        }
-
-        // Set the counselor data
-        setCounselor({
-          ...selectedCounselor,
-          status: "online",
-          nextSession: new Date(Date.now() + 86400000).toISOString(), // Tomorrow
-        })
-
-        // Sample messages - in a real app, you would fetch these from your API
-        setMessages([
-          {
-            id: "m1",
-            sender: "counselor",
-            text: `Hello! I'm ${selectedCounselor.name}. How are you feeling today?`,
-            timestamp: new Date(Date.now() - 3600000).toISOString(), // 1 hour ago
-          },
-        ])
-      } catch (error) {
-        console.error("Error loading chat data:", error)
-      } finally {
-        setIsLoading(false)
+    try {
+      // Replace this with API call in production
+      const defaultCounselor = {
+        id: "c1",
+        name: "Dr. Sarah Johnson",
+        title: "Addiction Specialist",
+        avatar: "/placeholder.svg?height=150&width=150",
+        specialization: "Substance Abuse, Trauma Recovery",
+        experience: "12 years",
+        availability: "Mon, Wed, Fri",
+        bio: "Dr. Johnson specializes in helping individuals overcome addiction through evidence-based approaches. She has extensive experience in trauma-informed care and cognitive behavioral therapy.",
+        rating: 4.9,
+        reviewCount: 124,
+        status: "online",
+        nextSession: new Date(Date.now() + 86400000).toISOString(), // Tomorrow
       }
-    }
 
-    fetchData()
-  }, [])
+      setCounselor(defaultCounselor)
+
+      setMessages([
+        {
+          id: "m1",
+          sender: "counselor",
+          text: `Hello! I'm ${defaultCounselor.name}. How are you feeling today?`,
+          timestamp: new Date(Date.now() - 3600000).toISOString(),
+        },
+      ])
+    } catch (error) {
+      console.error("Error loading chat data:", error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  fetchData()
+}, [])
+
 
   useEffect(() => {
     scrollToBottom()

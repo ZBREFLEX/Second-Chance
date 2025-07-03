@@ -1,16 +1,16 @@
-// server/routes/reportRoutes.js
 const express = require('express');
 const router = express.Router();
-const { verifyAdmin } = require('../middleware/verifyToken');
+const { verifyToken, verifyAdmin } = require('../middleware/verifyToken');
 const {
   getRecentReports,
   submitAnonymousReport,
   getReportStatus,
-} = require("../controllers/reportController"); // ✅ correct path
-  
+  getReportStats,
+} = require("../controllers/reportController");
 
 router.post('/anonymous', submitAnonymousReport);
-router.get('/status/:uuid', getReportStatus);   // ✅ this line fails if `getReportStatus` is undefined
+router.get('/status/:uuid', getReportStatus);
 router.get('/reports/recent', verifyAdmin, getRecentReports);
+router.get("/reports/stats", verifyToken, getReportStats);
 
 module.exports = router;

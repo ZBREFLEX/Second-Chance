@@ -1,4 +1,4 @@
-"use client";
+
 
 import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
@@ -57,48 +57,42 @@ const AdminUsers = () => {
 
   /* ----------  api ---------- */
   const loadUsers = useCallback(async () => {
-    setLoading(true);
-    try {
-      const token = localStorage.getItem("adminToken");
-      const response = await axios.get(
-        `http://localhost:5000/api/admin/users?${buildQuery()}`,
-        { 
-          headers: { 
-            Authorization: `Bearer ${token}` 
-          }
+  setLoading(true);
+  try {
+    const token = localStorage.getItem("adminToken");
+    const response = await axios.get(
+      `http://localhost:5000/api/admin/users?${buildQuery()}`,
+      { 
+        headers: { 
+          Authorization: `Bearer ${token}` 
         }
-      );
-<<<<<<< HEAD
-      
-      if (response.data) {
-        setUsers(response.data.users || []);
-        setTotalUsers(response.data.total ?? response.data.users?.length || 0);
-        setError(null);
-      } else {
-        throw new Error("Failed to load users");
       }
-=======
-      if (res.status !== 200) throw new Error("Failed to load users");
-      const data = res.data;
-      setUsers(data.users);
-      setTotalUsers(data.total ?? data.users.length);
+    );
+
+    if (response.data) {
+      setUsers(response.data.users || []);
+      setTotalUsers((response.data.total ?? response.data.total?.length) || 0);
+
       setError(null);
->>>>>>> 9d9ad94 (updates code)
-    } catch (e) {
-      console.error("Error loading users:", e);
-      setError(e.message || "Failed to load users");
-    } finally {
-      setLoading(false);
+    } else {
+      throw new Error("Failed to load users");
     }
-  }, [
-    searchTerm,
-    filterRole,
-    filterStatus,
-    sortBy,
-    sortOrder,
-    currentPage,
-    usersPerPage,
-  ]);
+
+  } catch (e) {
+    console.error("Error loading users:", e);
+    setError(e.message || "Failed to load users");
+  } finally {
+    setLoading(false);
+  }
+}, [
+  searchTerm,
+  filterRole,
+  filterStatus,
+  sortBy,
+  sortOrder,
+  currentPage,
+  usersPerPage,
+]);
 
   useEffect(() => {
     loadUsers();

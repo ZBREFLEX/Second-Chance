@@ -47,6 +47,8 @@ import ApplicationStatus from './components/counselor/ApplicationStatus';
 
 import ProtectedRoute from './components/counselor/components/ProtectedRoute';
 import AdminCounselors from './components/Admin/AdminCounselors';
+import VictimDetailsForm from './components/victim/pages/VictimDetailsForm';
+import CheckVictimDetails from './components/victim/pages/CheckVictimDetails';
 
 // This component uses useLocation, so it must be rendered inside <Router>
 function AppContent() {
@@ -78,16 +80,18 @@ function AppContent() {
         <Route path="/admin/content" element={<AdminContent />} />
         <Route path='/admin/counselor' element={<AdminCounselors/>} />
         //victim
-        <Route path='/victim' element={<VictimDashboard/>} />
+        <Route path="/victim" element={<CheckVictimDetails />} />
+        <Route path="/victim/dashboard" element={<VictimDashboard />} />
+        <Route path="/victim/victim-details" element={<VictimDetailsForm />} />
         <Route path='/victim/profile-settings' element={<ProfileSettings/>} />
         <Route path='/victim/risk-assessment' element={<VictimRiskAssessment/>} />
         <Route path='/victim/recovery-tracking' element={<VictimRecoveryTracking/>} />
         <Route path='/victim/counselor-chat' element={
-         <ProtectedChatRoute>
+        
          <VictimCounselorChat/>
-         </ProtectedChatRoute>
+         
          } />
-         <Route path='/victim/counselor-selection' element={<CounselorSelection/>} />
+        
         <Route path='/victim/awareness-hub' element={<VictimAwarenessHub/>} />
         
         //counselor

@@ -39,13 +39,15 @@ const AdminDashboard = () => {
   const [totalUsers, setTotalUsers] = useState(0);
   const [growthPercent, setGrowthPercent] = useState(0);
   const [recentReports, setRecentReports] = useState([]);
+  const [activeCases, setActiveCases] = useState(0);
+const [recoveries, setRecoveries] = useState(0);
+const [totalReports, setTotalReports] = useState(0);
 
   /* ────────────────────────
         AUTH + DATA FETCH
   ──────────────────────── */
   useEffect(() => {
     const token = localStorage.getItem("adminToken");
-    console.log("Stored token:", token);
     if (!token) {
       return navigate("/admin/login");
     }
@@ -53,14 +55,19 @@ const AdminDashboard = () => {
     const headers = { headers: { Authorization: `Bearer ${token}` } };
 
     Promise.all([
-      axios.get("http://localhost:5000/api/user-stats", headers),
-      axios.get("http://localhost:5000/api/reports/recent", headers),
-    ])
-      .then(([userRes, reportRes]) => {
-        setTotalUsers(userRes.data.totalUsers);
-        setGrowthPercent(userRes.data.growthPercent);
-        setRecentReports(reportRes.data);
-      })
+  axios.get("http://localhost:5000/api/user-stats", headers),
+  axios.get("http://localhost:5000/api/reports/recent", headers),
+  axios.get("http://localhost:5000/api/reports/stats", headers),
+])
+.then(([userRes, reportRes, statsRes]) => {
+  setTotalUsers(userRes.data.totalUsers);
+  setGrowthPercent(userRes.data.growthPercent);
+  setRecentReports(reportRes.data);
+  setTotalReports(statsRes.data.totalReports);
+  setActiveCases(statsRes.data.activeCases);
+  setRecoveries(statsRes.data.recoveries);
+})
+
       .catch((err) => {
         console.error("Dashboard fetch error:", err);
         if (err.response && (err.response.status === 401 || err.response.status === 403)) {
@@ -157,18 +164,17 @@ const AdminDashboard = () => {
           </div>
 
           <div className="stat-card">
-            <div className="stat-icon reports">
-              <FileText size={24} />
-            </div>
-            <div className="stat-content">
-              <h3>Reports Filed</h3>
-              <p className="stat-value">587</p>
-              <p className="stat-change increase">
-                <ArrowUp size={14} /> 8% from last month
-              </p>
-            </div>
-          </div>
-
+  <div className="stat-icon reports">
+    <FileText size={24} />
+  </div>
+  <div className="stat-content">
+    <h3>Reports Filed</h3>
+    <p className="stat-value">{totalReports.toLocaleString()}</p>
+    <p className="stat-change increase">
+      <ArrowUp size={14} /> 8% from last month
+    </p>
+  </div>
+</div>
           <div className="stat-card">
             <div className="stat-icon cases">
               <AlertTriangle size={24} />
