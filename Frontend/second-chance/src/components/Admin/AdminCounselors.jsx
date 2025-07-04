@@ -448,6 +448,7 @@ const AdminCounselors = () => {
                     <td className="actions-cell">
                       <button className="table-action view" title="View Details">
                         <Eye size={16} />
+                        <span className="action-text">View</span>
                       </button>
                       <button
                         className="table-action download"
@@ -455,6 +456,7 @@ const AdminCounselors = () => {
                         onClick={() => downloadResume(counselor.resume_url, counselor.username)}
                       >
                         <FileText size={16} />
+                        <span className="action-text">Resume</span>
                       </button>
                       {counselor.status === "pending" && (
                         <>
@@ -464,6 +466,7 @@ const AdminCounselors = () => {
                             onClick={() => handleApprove(counselor.id)}
                           >
                             <CheckCircle size={16} />
+                            <span className="action-text">Approve</span>
                           </button>
                           <button
                             className="table-action reject"
@@ -471,6 +474,7 @@ const AdminCounselors = () => {
                             onClick={() => handleReject(counselor.id)}
                           >
                             <XCircle size={16} />
+                            <span className="action-text">Reject</span>
                           </button>
                         </>
                       )}

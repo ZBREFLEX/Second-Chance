@@ -1441,6 +1441,10 @@ tbody td {
   .close-sidebar {
     display: block;
   }
+  
+  .action-text {
+    display: none;
+  }
 }
 
 @media (max-width: 768px) {
@@ -1608,4 +1612,26 @@ tbody td {
   100% {
     transform: rotate(360deg);
   }
+}
+
+/* Action button text */
+.action-text {
+  margin-left: 4px;
+  font-size: 0.75rem;
+}
+
+/* Ensure action buttons have proper styling */
+.table-action.approve {
+  background-color: rgba(16, 185, 129, 0.1);
+  color: #10b981;
+}
+
+.table-action.reject {
+  background-color: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+
+.table-action.download {
+  background-color: rgba(59, 130, 246, 0.1);
+  color: #3b82f6;
 }
