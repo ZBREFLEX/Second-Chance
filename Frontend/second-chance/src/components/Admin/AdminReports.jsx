@@ -293,8 +293,14 @@ const AdminReports = () => {
                     <td>{r.date}</td>
                     <td className="actions-cell">
                       <button className="table-action view"><Eye size={16}/></button>
-                      <button className="table-action edit"><CheckCircle size={16}/></button>
-                      <button className="table-action delete"><XCircle size={16}/></button>
+                      <button className="table-action edit">
+                        <CheckCircle size={16}/>
+                        <span className="action-text">Approve</span>
+                      </button>
+                      <button className="table-action delete">
+                        <XCircle size={16}/>
+                        <span className="action-text">Reject</span>
+                      </button>
                     </td>
                   </tr>
                 ))}

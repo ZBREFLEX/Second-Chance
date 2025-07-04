@@ -355,12 +355,15 @@ const AdminUsers = () => {
                     <td className="actions-cell">
                       <button className="table-action view">
                         <Eye size={16} />
+                       <span className="action-text">View</span>
                       </button>
                       <button className="table-action edit">
                         <Edit size={16} />
+                       <span className="action-text">Edit</span>
                       </button>
                       <button className="table-action delete">
                         <Trash2 size={16} />
+                       <span className="action-text">Delete</span>
                       </button>
                     </td>
                   </tr>

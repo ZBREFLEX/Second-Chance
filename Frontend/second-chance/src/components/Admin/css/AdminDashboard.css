@@ -654,6 +654,7 @@ tbody td {
 .action-button {
   display: flex;
   align-items: center;
+  justify-content: center;
   padding: 0.5rem 1rem;
   background-color: var(--gray-100);
   border: none;
@@ -839,7 +840,7 @@ tbody td {
 }
 
 .table-action {
-  width: 28px;
+  min-width: 28px;
   height: 28px;
   display: flex;
   align-items: center;
@@ -847,6 +848,7 @@ tbody td {
   border: none;
   border-radius: var(--border-radius);
   cursor: pointer;
+  padding: 0 0.5rem;
   transition: var(--transition);
 }
 
