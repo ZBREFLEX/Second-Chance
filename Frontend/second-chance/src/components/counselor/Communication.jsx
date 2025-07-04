@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
+import axios from "axios"
 import Layout from "./components/Layout"
 import "./css/CommunicationPortal.css"
 
@@ -13,115 +14,50 @@ const CommunicationPortal = () => {
   const messagesEndRef = useRef(null)
 
   useEffect(() => {
-    // Simulate API call to fetch patients
-    setPatients([
-      {
-        id: 1,
-        name: "John Doe",
-        lastMessage: "I'll be there for the session tomorrow.",
-        time: "10:30 AM",
-        unread: 2,
-        status: "online",
-      },
-      {
-        id: 2,
-        name: "Sarah Johnson",
-        lastMessage: "Thank you for your help yesterday.",
-        time: "Yesterday",
-        unread: 0,
-        status: "offline",
-      },
-      {
-        id: 3,
-        name: "Michael Brown",
-        lastMessage: "Can we reschedule the appointment?",
-        time: "Yesterday",
-        unread: 1,
-        status: "offline",
-      },
-      {
-        id: 4,
-        name: "Emily Wilson",
-        lastMessage: "I've been feeling much better this week.",
-        time: "Monday",
-        unread: 0,
-        status: "online",
-      },
-      {
-        id: 5,
-        name: "Robert Garcia",
-        lastMessage: "I need to talk about something important.",
-        time: "Sunday",
-        unread: 0,
-        status: "offline",
-      },
-    ])
+    axios.get("http://localhost:5000/api/chat/users?role=victim")
+      .then(res => setPatients(res.data))
+      .catch(console.error)
   }, [])
 
   useEffect(() => {
-    // Scroll to bottom of messages when messages change or when a patient is selected
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" })
-    }
-  }, [messages, selectedPatient])
-
-  useEffect(() => {
-    // Load messages when a patient is selected
     if (selectedPatient) {
-      // Simulate API call to fetch messages for the selected patient
-      const mockMessages = [
-        {
-          id: 1,
-          sender: "patient",
-          content: "Hello Dr. Smith, I wanted to ask about the medication you prescribed.",
-          time: "10:15 AM",
-        },
-        { id: 2, sender: "counselor", content: "Hi John, what questions do you have about it?", time: "10:20 AM" },
-        {
-          id: 3,
-          sender: "patient",
-          content: "I've been experiencing some side effects like drowsiness. Is that normal?",
-          time: "10:22 AM",
-        },
-        {
-          id: 4,
-          sender: "counselor",
-          content:
-            "Yes, drowsiness is a common side effect, especially in the first few days. It should improve as your body adjusts. If it persists or becomes severe, we might need to adjust the dosage.",
-          time: "10:25 AM",
-        },
-        {
-          id: 5,
-          sender: "patient",
-          content: "I see. Thank you for explaining. Also, I'll be there for the session tomorrow.",
-          time: "10:30 AM",
-        },
-      ]
-      setMessages(mockMessages)
-    } else {
-      setMessages([])
+      axios.get(`http://localhost:5000/api/chat/messages?senderId=${selectedPatient.id}&receiverId=2`)
+        .then(res => setMessages(res.data.map((msg, index) => ({
+          id: index,
+          sender: msg.sender_id === 2 ? "counselor" : "patient",
+          content: msg.content,
+          time: new Date(msg.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+        }))))
+        .catch(console.error)
     }
   }, [selectedPatient])
 
-  const handleSendMessage = (e) => {
+  const handleSendMessage = async (e) => {
     e.preventDefault()
-    if (newMessage.trim() === "" || !selectedPatient) return
+    if (!newMessage.trim() || !selectedPatient) return
 
-    // Add new message to the list
-    const newMsg = {
+    const msg = {
+      sender_id: 2, // counselor
+      receiver_id: selectedPatient.id,
+      content: newMessage,
+    }
+
+    await axios.post("http://localhost:5000/api/chat/messages", msg)
+
+    setMessages([...messages, {
       id: messages.length + 1,
       sender: "counselor",
       content: newMessage,
       time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-    }
+    }])
 
-    setMessages([...messages, newMsg])
     setNewMessage("")
-
-    // In a real app, you would send this message to your backend
   }
 
-  const filteredPatients = patients.filter((patient) => patient.name.toLowerCase().includes(searchTerm.toLowerCase()))
+  const filteredPatients = patients.filter(
+  (patient) => patient.name?.toLowerCase().includes(searchTerm.toLowerCase())
+);
+
 
   return (
     <Layout title="Communication Portal">
@@ -145,14 +81,14 @@ const CommunicationPortal = () => {
                 onClick={() => setSelectedPatient(patient)}
               >
                 <div className="patient-avatar">
-                  <div className={`status-indicator ${patient.status}`}></div>
+                  <div className={`status-indicator ${patient.status || "offline"}`}></div>
                 </div>
                 <div className="patient-info">
                   <div className="patient-name-container">
                     <h3>{patient.name}</h3>
-                    <span className="message-time">{patient.time}</span>
+                    <span className="message-time">{patient.time || ""}</span>
                   </div>
-                  <p className="last-message">{patient.lastMessage}</p>
+                  <p className="last-message">{patient.lastMessage || ""}</p>
                 </div>
                 {patient.unread > 0 && <div className="unread-badge">{patient.unread}</div>}
               </div>
@@ -166,7 +102,7 @@ const CommunicationPortal = () => {
               <div className="chat-header">
                 <div className="chat-patient-info">
                   <div className="patient-avatar large">
-                    <div className={`status-indicator ${selectedPatient.status}`}></div>
+                    <div className={`status-indicator ${selectedPatient.status || "offline"}`}></div>
                   </div>
                   <div>
                     <h3>{selectedPatient.name}</h3>

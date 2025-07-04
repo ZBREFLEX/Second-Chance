@@ -1,11 +1,12 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
+import axios from "axios"
 import { Send, Paperclip, Info, Phone, Video, ChevronDown, ChevronUp } from "react-feather"
 import Sidebar from "../components/Sidebar"
 import "../styles/CounselorChat.css"
 
-const CounselorChat = () => {
+const VictimCounselorChat = () => {
   const [messages, setMessages] = useState([])
   const [newMessage, setNewMessage] = useState("")
   const [counselor, setCounselor] = useState(null)
@@ -16,47 +17,39 @@ const CounselorChat = () => {
   })
   const messagesEndRef = useRef(null)
 
- useEffect(() => {
-  const fetchData = async () => {
-    setIsLoading(true)
+  const victimId = 1 // In real app: get from auth
+  const counselorId = 2 // Fixed or assigned counselor
 
-    try {
-      // Replace this with API call in production
-      const defaultCounselor = {
-        id: "c1",
-        name: "Dr. Sarah Johnson",
-        title: "Addiction Specialist",
-        avatar: "/placeholder.svg?height=150&width=150",
-        specialization: "Substance Abuse, Trauma Recovery",
-        experience: "12 years",
-        availability: "Mon, Wed, Fri",
-        bio: "Dr. Johnson specializes in helping individuals overcome addiction through evidence-based approaches. She has extensive experience in trauma-informed care and cognitive behavioral therapy.",
-        rating: 4.9,
-        reviewCount: 124,
-        status: "online",
-        nextSession: new Date(Date.now() + 86400000).toISOString(), // Tomorrow
+  useEffect(() => {
+    const fetchMessages = async () => {
+      try {
+        const res = await axios.get(`http://localhost:5000/api/chat/messages?senderId=${victimId}&receiverId=${counselorId}`)
+        setMessages(res.data)
+      } catch (err) {
+        console.error("Failed to load messages", err)
+      } finally {
+        setIsLoading(false)
       }
-
-      setCounselor(defaultCounselor)
-
-      setMessages([
-        {
-          id: "m1",
-          sender: "counselor",
-          text: `Hello! I'm ${defaultCounselor.name}. How are you feeling today?`,
-          timestamp: new Date(Date.now() - 3600000).toISOString(),
-        },
-      ])
-    } catch (error) {
-      console.error("Error loading chat data:", error)
-    } finally {
-      setIsLoading(false)
     }
-  }
 
-  fetchData()
-}, [])
+    fetchMessages()
 
+    // Mock counselor info (replace with API later)
+    setCounselor({
+      id: counselorId,
+      name: "Dr. Sarah Johnson",
+      title: "Addiction Specialist",
+      avatar: "/placeholder.svg",
+      specialization: "Substance Abuse, Trauma Recovery",
+      experience: "12 years",
+      availability: "Mon, Wed, Fri",
+      bio: "Helping individuals overcome addiction using trauma-informed care.",
+      rating: 4.9,
+      reviewCount: 124,
+      status: "online",
+      nextSession: new Date(Date.now() + 86400000).toISOString(),
+    })
+  }, [])
 
   useEffect(() => {
     scrollToBottom()
@@ -66,32 +59,29 @@ const CounselorChat = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
   }
 
-  const handleSendMessage = (e) => {
+  const handleSendMessage = async (e) => {
     e.preventDefault()
-
     if (!newMessage.trim()) return
 
     const userMessage = {
-      id: `m${messages.length + 1}`,
+      id: `m${Date.now()}`,
       sender: "user",
       text: newMessage,
       timestamp: new Date().toISOString(),
     }
 
-    setMessages([...messages, userMessage])
+    setMessages((prev) => [...prev, userMessage])
     setNewMessage("")
 
-    // Simulate counselor response after a delay
-    setTimeout(() => {
-      const counselorMessage = {
-        id: `m${messages.length + 2}`,
-        sender: "counselor",
-        text: "Thank you for sharing. I'm here to help you through this process. Is there anything specific you'd like to discuss today?",
-        timestamp: new Date().toISOString(),
-      }
-
-      setMessages((prevMessages) => [...prevMessages, counselorMessage])
-    }, 2000)
+    try {
+      await axios.post("http://localhost:5000/api/chat/messages", {
+        sender_id: victimId,
+        receiver_id: counselorId,
+        content: newMessage,
+      })
+    } catch (err) {
+      console.error("Error sending message", err)
+    }
   }
 
   const toggleSection = (section) => {
@@ -129,21 +119,17 @@ const CounselorChat = () => {
     })}`
   }
 
-  // Group messages by date
   const groupMessagesByDate = () => {
     const groups = {}
-
     messages.forEach((message) => {
       const date = new Date(message.timestamp).toDateString()
-      if (!groups[date]) {
-        groups[date] = []
-      }
+      if (!groups[date]) groups[date] = []
       groups[date].push(message)
     })
 
-    return Object.entries(groups).map(([date, messages]) => ({
+    return Object.entries(groups).map(([date, msgs]) => ({
       date,
-      messages,
+      messages: msgs,
     }))
   }
 
@@ -157,65 +143,41 @@ const CounselorChat = () => {
             <div className="loading">Loading conversation...</div>
           ) : (
             <>
-              {/* Compact Counselor Info */}
+              {/* Header */}
               <div className="chat-header">
                 <div className="counselor-info">
-                  <img src={counselor.avatar || "/placeholder.svg"} alt={counselor.name} className="counselor-avatar" />
+                  <img src={counselor.avatar} alt={counselor.name} className="counselor-avatar" />
                   <div className="counselor-details">
                     <div className="counselor-name-status">
                       <h2>{counselor.name}</h2>
-                      <span className={`counselor-status ${counselor.status}`}>
-                        {counselor.status === "online" ? "Online" : "Offline"}
-                      </span>
+                      <span className={`counselor-status ${counselor.status}`}>{counselor.status}</span>
                     </div>
                     <p>{counselor.title}</p>
                   </div>
                 </div>
-
                 <div className="chat-actions">
-                  <button
-                    className="section-toggle"
-                    onClick={() => toggleSection("info")}
-                    aria-label="Toggle counselor info"
-                  >
+                  <button className="section-toggle" onClick={() => toggleSection("info")}>
                     <Info size={18} />
                     {expandedSections.info ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
                   </button>
-                  <button className="chat-action-btn" aria-label="Call">
-                    <Phone size={18} />
-                  </button>
-                  <button className="chat-action-btn" aria-label="Video call">
-                    <Video size={18} />
-                  </button>
+                  <button className="chat-action-btn"><Phone size={18} /></button>
+                  <button className="chat-action-btn"><Video size={18} /></button>
                 </div>
               </div>
 
-              {/* Expandable Counselor Info */}
+              {/* Expanded Info */}
               {expandedSections.info && (
                 <div className="counselor-expanded-info">
-                  <div className="info-item">
-                    <span className="info-label">Specialization:</span>
-                    <span className="info-value">{counselor.specialization}</span>
-                  </div>
-                  <div className="info-item">
-                    <span className="info-label">Experience:</span>
-                    <span className="info-value">{counselor.experience}</span>
-                  </div>
-                  <div className="info-item">
-                    <span className="info-label">Availability:</span>
-                    <span className="info-value">{counselor.availability}</span>
-                  </div>
+                  <div className="info-item"><strong>Specialization:</strong> {counselor.specialization}</div>
+                  <div className="info-item"><strong>Experience:</strong> {counselor.experience}</div>
+                  <div className="info-item"><strong>Availability:</strong> {counselor.availability}</div>
                 </div>
               )}
 
-              {/* Next Session Banner */}
+              {/* Next Session */}
               <div className="next-session-banner">
                 <div className="session-info">
-                  <button
-                    className="session-toggle"
-                    onClick={() => toggleSection("session")}
-                    aria-label="Toggle session details"
-                  >
+                  <button className="session-toggle" onClick={() => toggleSection("session")}>
                     {expandedSections.session ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
                   </button>
                   <span>Next session: {formatNextSession(counselor.nextSession)}</span>
@@ -223,25 +185,18 @@ const CounselorChat = () => {
                 {expandedSections.session && <button className="reschedule-btn">Reschedule</button>}
               </div>
 
-              {/* Chat Messages */}
+              {/* Messages */}
               <div className="chat-messages">
                 {groupMessagesByDate().map((group, groupIndex) => (
                   <div key={groupIndex} className="message-group">
-                    <div className="date-separator">
-                      <span>{formatDate(new Date(group.date))}</span>
-                    </div>
-
+                    <div className="date-separator"><span>{formatDate(group.date)}</span></div>
                     {group.messages.map((message) => (
-                      <div key={message.id} className={`message ${message.sender}`}>
+                      <div key={message.id} className={`message ${message.sender === "user" ? "user" : "counselor"}`}>
                         {message.sender === "counselor" && (
-                          <img
-                            src={counselor.avatar || "/placeholder.svg"}
-                            alt={counselor.name}
-                            className="message-avatar"
-                          />
+                          <img src={counselor.avatar} alt={counselor.name} className="message-avatar" />
                         )}
                         <div className="message-content">
-                          <div className="message-text">{message.text}</div>
+                          <div className="message-text">{message.text || message.content}</div>
                           <div className="message-time">{formatTime(message.timestamp)}</div>
                         </div>
                       </div>
@@ -251,18 +206,16 @@ const CounselorChat = () => {
                 <div ref={messagesEndRef} />
               </div>
 
-              {/* Chat Input */}
+              {/* Message Input */}
               <form className="chat-input" onSubmit={handleSendMessage}>
-                <button type="button" className="attachment-btn" aria-label="Add attachment">
-                  <Paperclip size={18} />
-                </button>
+                <button type="button" className="attachment-btn"><Paperclip size={18} /></button>
                 <input
                   type="text"
                   placeholder="Type a message..."
                   value={newMessage}
                   onChange={(e) => setNewMessage(e.target.value)}
                 />
-                <button type="submit" className="send-btn" disabled={!newMessage.trim()} aria-label="Send message">
+                <button type="submit" className="send-btn" disabled={!newMessage.trim()}>
                   <Send size={18} />
                 </button>
               </form>
@@ -274,4 +227,4 @@ const CounselorChat = () => {
   )
 }
 
-export default CounselorChat
+export default VictimCounselorChat
