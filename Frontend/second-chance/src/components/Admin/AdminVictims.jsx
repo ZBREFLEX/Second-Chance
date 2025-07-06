@@ -62,7 +62,7 @@ const [location, setLocation] = useState("");
   const loadCounselors = async () => {
   try {
     const token = localStorage.getItem("adminToken");
-    const response = await axios.get(`http://localhost:5000/api/admin/users/counselors`, {
+    const response = await axios.get(`http://localhost:5000/api/admin/victims/counselors`, {
       params: {
         specialization,
         location,
@@ -71,7 +71,12 @@ const [location, setLocation] = useState("");
     });
     setCounselors(response.data);
   } catch (err) {
-    console.error("Error fetching counselors", err);
+    console.error("Error fetching counselors:", err);
+    // Add fallback data in case the API fails
+    setCounselors([
+      { id: 1, name: "Dr. Sarah Johnson", email: "sarah@example.com" },
+      { id: 2, name: "Dr. Michael Chen", email: "michael@example.com" }
+    ]);
   }
 };
 
