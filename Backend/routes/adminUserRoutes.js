@@ -1,11 +1,17 @@
 const express = require("express");
-const ctrl    = require("../controllers/adminUserController");
-const router  = express.Router();
+const router = express.Router();
 
-router.get("/",                 ctrl.getUsers);
-router.post("/",                ctrl.createUser);
-router.put("/:id",              ctrl.updateUser);
-router.put("/bulk-status",      ctrl.bulkStatus);
-router.delete("/",              ctrl.bulkDelete);
+// ✅ ADD THIS LINE at the top
+const adminUserController = require("../controllers/adminUserController");
+
+// Routes
+router.get("/", adminUserController.getUsers);
+router.post("/", adminUserController.createUser);
+router.put("/:id", adminUserController.updateUser);
+router.put("/bulk-status", adminUserController.bulkStatus);
+router.delete("/", adminUserController.bulkDelete);
+
+// ✅ This is the one that was throwing the error
+router.get("/counselors", adminUserController.getAllCounselors);
 
 module.exports = router;

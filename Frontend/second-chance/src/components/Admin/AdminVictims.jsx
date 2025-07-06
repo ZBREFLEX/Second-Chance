@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import {
   Search,
-  Filter,
   Download,
   RefreshCw,
   Eye,
@@ -10,10 +9,13 @@ import {
   ChevronRight,
   Trash2,
   UserX,
+  UserPlus,
 } from "lucide-react";
 import AdminLayout from "./AdminLayout";
 
 const AdminVictims = () => {
+  const [specialization, setSpecialization] = useState("");
+const [location, setLocation] = useState("");
   const [victims, setVictims] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -25,7 +27,11 @@ const AdminVictims = () => {
   const [victimsPerPage] = useState(10);
   const [filterAge, setFilterAge] = useState("all");
   const [filterDrug, setFilterDrug] = useState("all");
+
   const [selectedVictim, setSelectedVictim] = useState(null);
+  const [assignModal, setAssignModal] = useState(null);
+  const [selectedCounselor, setSelectedCounselor] = useState("");
+  const [counselors, setCounselors] = useState([]);
 
   const buildQuery = () => {
     return new URLSearchParams({
@@ -43,11 +49,8 @@ const AdminVictims = () => {
         `http://localhost:5000/api/admin/victims?${buildQuery()}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
-
-      if (Array.isArray(response.data)) {
-        setVictims(response.data);
-        setError(null);
-      } else throw new Error("Invalid data format");
+      setVictims(Array.isArray(response.data) ? response.data : []);
+      setError(null);
     } catch (e) {
       console.error("Error loading victims:", e);
       setError(e.message || "Failed to load victim details");
@@ -56,14 +59,29 @@ const AdminVictims = () => {
     }
   }, [searchTerm, sortBy, sortOrder]);
 
+  const loadCounselors = async () => {
+  try {
+    const token = localStorage.getItem("adminToken");
+    const response = await axios.get(`http://localhost:5000/api/admin/counselors`, {
+      params: {
+        specialization,
+        location,
+      },
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    setCounselors(response.data);
+  } catch (err) {
+    console.error("Error fetching counselors", err);
+  }
+};
+
   useEffect(() => {
     loadVictims();
+    loadCounselors();
   }, [loadVictims]);
 
   const filteredVictims = victims.filter((v) => {
-    const inSearch = `${v.username} ${v.email} ${v.location}`
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase());
+    const inSearch = `${v.username} ${v.email} ${v.location}`.toLowerCase().includes(searchTerm.toLowerCase());
     const inAge =
       filterAge === "all" ||
       (filterAge === "<18" && v.age < 18) ||
@@ -89,28 +107,9 @@ const AdminVictims = () => {
   const currentVictims = sortedVictims.slice(indexOfFirst, indexOfLast);
   const totalPages = Math.ceil(sortedVictims.length / victimsPerPage);
 
-  const handleSort = (col) => {
-    if (sortBy === col) setSortOrder(sortOrder === "asc" ? "desc" : "asc");
-    else {
-      setSortBy(col);
-      setSortOrder("asc");
-    }
-  };
-
   const exportCSV = () => {
     const csv = [
-      [
-        "Username",
-        "Email",
-        "Age",
-        "Gender",
-        "Location",
-        "Drug Type",
-        "Frequency",
-        "Support",
-        "Risk",
-        "Submitted"
-      ],
+      ["Username", "Email", "Age", "Gender", "Location", "Drug Type", "Frequency", "Support", "Risk", "Submitted"],
       ...filteredVictims.map((v) => [
         v.username,
         v.email,
@@ -121,8 +120,8 @@ const AdminVictims = () => {
         v.frequency,
         v.support_system,
         v.risk_score,
-        new Date(v.submitted_at).toLocaleDateString("en-IN")
-      ])
+        new Date(v.submitted_at).toLocaleDateString("en-IN"),
+      ]),
     ]
       .map((row) => row.join(","))
       .join("\n");
@@ -138,26 +137,28 @@ const AdminVictims = () => {
 
   const deactivateVictim = async (userId) => {
     if (!window.confirm("Are you sure you want to deactivate this victim?")) return;
-    try {
-      await axios.put(`http://localhost:5000/api/admin/users/${userId}`, {
-        status: "inactive",
-      });
-      loadVictims();
-    } catch (e) {
-      console.error(e);
-    }
+    await axios.put(`http://localhost:5000/api/admin/users/${userId}`, {
+      status: "inactive",
+    });
+    loadVictims();
   };
 
   const deleteVictim = async (userId) => {
     if (!window.confirm("Are you sure you want to permanently delete this victim?")) return;
-    try {
-      await axios.delete(`http://localhost:5000/api/admin/users`, {
-        data: { ids: [userId] },
-      });
-      loadVictims();
-    } catch (e) {
-      console.error(e);
-    }
+    await axios.delete(`http://localhost:5000/api/admin/users`, {
+      data: { ids: [userId] },
+    });
+    loadVictims();
+  };
+
+  const assignCounselor = async () => {
+    if (!assignModal || !selectedCounselor) return;
+    await axios.put(`http://localhost:5000/api/admin/victims/assign-counselor`, {
+      victim_id: assignModal.user_id,
+      counselor_id: selectedCounselor,
+    });
+    setAssignModal(null);
+    loadVictims();
   };
 
   return (
@@ -178,11 +179,7 @@ const AdminVictims = () => {
         <div className="filters-bar">
           <div className="search-filter">
             <Search size={18} />
-            <input
-              placeholder="Search victims…"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
+            <input placeholder="Search victims…" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
           </div>
 
           <div className="filter-select">
@@ -232,22 +229,16 @@ const AdminVictims = () => {
                   <td>{v.risk_score ?? "N/A"}</td>
                   <td>{new Date(v.submitted_at).toLocaleDateString()}</td>
                   <td>
-                    <button
-                      className="table-action view"
-                      onClick={() => setSelectedVictim(v)}
-                    >
+                    <button className="table-action view" onClick={() => setSelectedVictim(v)}>
                       <Eye size={16} />
                     </button>
-                    <button
-                      className="table-action"
-                      onClick={() => deactivateVictim(v.user_id)}
-                    >
+                    <button className="table-action" onClick={() => setAssignModal(v)}>
+                      <UserPlus size={16} />
+                    </button>
+                    <button className="table-action" onClick={() => deactivateVictim(v.user_id)}>
                       <UserX size={16} />
                     </button>
-                    <button
-                      className="table-action delete"
-                      onClick={() => deleteVictim(v.user_id)}
-                    >
+                    <button className="table-action delete" onClick={() => deleteVictim(v.user_id)}>
                       <Trash2 size={16} />
                     </button>
                   </td>
@@ -264,10 +255,7 @@ const AdminVictims = () => {
           <span>
             Page {currentPage} of {totalPages}
           </span>
-          <button
-            disabled={currentPage === totalPages}
-            onClick={() => setCurrentPage(currentPage + 1)}
-          >
+          <button disabled={currentPage === totalPages} onClick={() => setCurrentPage(currentPage + 1)}>
             <ChevronRight size={16} />
           </button>
         </div>
@@ -283,13 +271,43 @@ const AdminVictims = () => {
               <p><strong>Location:</strong> {selectedVictim.location}</p>
               <p><strong>Drug Type:</strong> {selectedVictim.drug_type}</p>
               <p><strong>Frequency:</strong> {selectedVictim.frequency}</p>
-              <p><strong>Duration:</strong> {selectedVictim.duration_of_use}</p>
-              <p><strong>Last Use:</strong> {selectedVictim.last_use_date}</p>
               <p><strong>Support:</strong> {selectedVictim.support_system}</p>
               <p><strong>Risk Score:</strong> {selectedVictim.risk_score}</p>
-              <button className="modal-close" onClick={() => setSelectedVictim(null)}>
-                Close
-              </button>
+              <button className="modal-close" onClick={() => setSelectedVictim(null)}>Close</button>
+              <select value={specialization} onChange={(e) => setSpecialization(e.target.value)}>
+  <option value="">All Specializations</option>
+  <option value="drug-abuse">Drug Abuse</option>
+  <option value="mental-health">Mental Health</option>
+</select>
+
+<select value={location} onChange={(e) => setLocation(e.target.value)}>
+  <option value="">All Locations</option>
+  <option value="Kerala">Kerala</option>
+  <option value="Mumbai">Mumbai</option>
+</select>
+
+<button onClick={loadCounselors}>Filter Counselors</button>
+            </div>
+          </div>
+        )}
+
+        {assignModal && (
+          <div className="modal">
+            <div className="modal-content">
+              <h2>Assign Counselor</h2>
+              <p>Assigning to: <strong>{assignModal.username}</strong></p>
+              <select value={selectedCounselor} onChange={(e) => setSelectedCounselor(e.target.value)}>
+                <option value="">Select counselor</option>
+                {counselors.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.name} ({c.email})
+                  </option>
+                ))}
+              </select>
+              <div className="modal-actions">
+                <button className="modal-close" onClick={() => setAssignModal(null)}>Cancel</button>
+                <button className="modal-confirm" disabled={!selectedCounselor} onClick={assignCounselor}>Assign</button>
+              </div>
             </div>
           </div>
         )}

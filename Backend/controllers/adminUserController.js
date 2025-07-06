@@ -1,7 +1,24 @@
 const bcrypt = require("bcryptjs");
 const pool   = require("../models/db");
 
-// helpers --------------------------------------------------
+// ──────────────────────────────
+// GET /api/admin/counselors
+// ──────────────────────────────
+const getAllCounselors = async (req, res) => {
+  try {
+    const [rows] = await pool.query(
+      "SELECT id, name, email FROM users WHERE role = 'counselor' AND status = 'active'"
+    );
+    res.json(rows);
+  } catch (err) {
+    console.error("Error fetching counselors:", err);
+    res.status(500).json({ error: "Failed to fetch counselors" });
+  }
+};
+
+// ──────────────────────────────
+// Helper
+// ──────────────────────────────
 const buildWhereClause = (search, role, status) => {
   const clauses = [];
   const params  = [];
@@ -18,22 +35,23 @@ const buildWhereClause = (search, role, status) => {
     clauses.push("status = ?");
     params.push(status);
   }
+
   return { where: clauses.length ? "WHERE " + clauses.join(" AND ") : "", params };
 };
 
-// ----------------------------------------------------------
-
+// ──────────────────────────────
 // GET /api/admin/users
-exports.getUsers = async (req, res, next) => {
+// ──────────────────────────────
+const getUsers = async (req, res, next) => {
   try {
     const {
-      search     = "",
-      role       = "all",
-      status     = "all",
-      sortBy     = "created_at",
-      sortOrder  = "desc",
-      page       = 1,
-      limit      = 10,
+      search    = "",
+      role      = "all",
+      status    = "all",
+      sortBy    = "created_at",
+      sortOrder = "desc",
+      page      = 1,
+      limit     = 10,
     } = req.query;
 
     const offset = (page - 1) * limit;
@@ -50,15 +68,16 @@ exports.getUsers = async (req, res, next) => {
     );
 
     const [[{ "FOUND_ROWS()": total }]] = await pool.query("SELECT FOUND_ROWS()");
-
     res.json({ users: rows, total });
   } catch (err) {
     next(err);
   }
 };
 
+// ──────────────────────────────
 // POST /api/admin/users
-exports.createUser = async (req, res, next) => {
+// ──────────────────────────────
+const createUser = async (req, res, next) => {
   try {
     const { username, email, password, role = "victim" } = req.body;
     const hashed = await bcrypt.hash(password, 10);
@@ -73,10 +92,12 @@ exports.createUser = async (req, res, next) => {
   }
 };
 
+// ──────────────────────────────
 // PUT /api/admin/users/:id
-exports.updateUser = async (req, res, next) => {
+// ──────────────────────────────
+const updateUser = async (req, res, next) => {
   try {
-    const { id }           = req.params;
+    const { id } = req.params;
     const { role, status } = req.body;
 
     await pool.query(
@@ -89,8 +110,10 @@ exports.updateUser = async (req, res, next) => {
   }
 };
 
+// ──────────────────────────────
 // PUT /api/admin/users/bulk-status
-exports.bulkStatus = async (req, res, next) => {
+// ──────────────────────────────
+const bulkStatus = async (req, res, next) => {
   try {
     const { ids = [], status } = req.body;
     if (!ids.length) return res.status(400).json({ message: "No ids supplied" });
@@ -105,8 +128,10 @@ exports.bulkStatus = async (req, res, next) => {
   }
 };
 
+// ──────────────────────────────
 // DELETE /api/admin/users
-exports.bulkDelete = async (req, res, next) => {
+// ──────────────────────────────
+const bulkDelete = async (req, res, next) => {
   try {
     const { ids = [] } = req.body;
     if (!ids.length) return res.status(400).json({ message: "No ids supplied" });
@@ -119,4 +144,16 @@ exports.bulkDelete = async (req, res, next) => {
   } catch (err) {
     next(err);
   }
+};
+
+// ──────────────────────────────
+// Export all
+// ──────────────────────────────
+module.exports = {
+  getUsers,
+  createUser,
+  updateUser,
+  bulkStatus,
+  bulkDelete,
+  getAllCounselors,
 };

@@ -37,6 +37,8 @@ const express = require('express');
   app.use("/api/reports", anonymousReportRoutes);
   app.use("/api/chat", chatRoutes);
   app.use("/api/admin/victims", adminVictimRoutes);
+  app.use("/api/admin/victims", require("./routes/adminVictims"));
+
   app.use(errorHandler);
   
 
