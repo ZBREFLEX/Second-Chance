@@ -62,7 +62,7 @@ const [location, setLocation] = useState("");
   const loadCounselors = async () => {
   try {
     const token = localStorage.getItem("adminToken");
-    const response = await axios.get(`http://localhost:5000/api/admin/counselors`, {
+    const response = await axios.get(`http://localhost:5000/api/admin/users/counselors`, {
       params: {
         specialization,
         location,
