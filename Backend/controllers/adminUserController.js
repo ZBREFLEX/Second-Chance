@@ -6,15 +6,29 @@ const pool   = require("../models/db");
 // ──────────────────────────────
 const getAllCounselors = async (req, res) => {
   try {
-    const [rows] = await pool.query(
-      "SELECT id, name, email FROM users WHERE role = 'counselor' AND status = 'active'"
-    );
+    const { specialization, location } = req.query;
+    let sql = `SELECT id, name, email FROM users WHERE role = 'counselor' AND status = 'active'`;
+    const params = [];
+
+    if (specialization) {
+      sql += ` AND specialization = ?`;
+      params.push(specialization);
+    }
+
+    if (location) {
+      sql += ` AND location = ?`;
+      params.push(location);
+    }
+
+    const [rows] = await pool.query(sql, params);
     res.json(rows);
   } catch (err) {
     console.error("Error fetching counselors:", err);
     res.status(500).json({ error: "Failed to fetch counselors" });
   }
 };
+
+
 
 // ──────────────────────────────
 // Helper
