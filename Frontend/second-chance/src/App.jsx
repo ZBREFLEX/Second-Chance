@@ -49,6 +49,7 @@ import ProtectedRoute from './components/counselor/components/ProtectedRoute';
 import AdminCounselors from './components/Admin/AdminCounselors';
 import VictimDetailsForm from './components/victim/pages/VictimDetailsForm';
 import CheckVictimDetails from './components/victim/pages/CheckVictimDetails';
+import AdminVictims from './components/Admin/AdminVictims';
 
 // This component uses useLocation, so it must be rendered inside <Router>
 function AppContent() {
@@ -76,9 +77,11 @@ function AppContent() {
         <Route path="/admin-layout" element={<AdminLayout />} />
         <Route path="/admin/settings" element={<AdminSettings />} />
         <Route path="/admin/users" element={<AdminUsers />} />
+        <Route path='/admin/victim' element={<AdminVictims/>} />
         <Route path="/admin/reports" element={<AdminReports />} />
         <Route path="/admin/content" element={<AdminContent />} />
         <Route path='/admin/counselor' element={<AdminCounselors/>} />
+        
         //victim
         <Route path="/victim" element={<CheckVictimDetails />} />
         <Route path="/victim/dashboard" element={<VictimDashboard />} />
@@ -93,6 +96,7 @@ function AppContent() {
          } />
         
         <Route path='/victim/awareness-hub' element={<VictimAwarenessHub/>} />
+
         
         //counselor
         <Route path='/counselor' element={

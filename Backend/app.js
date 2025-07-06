@@ -14,6 +14,7 @@ const express = require('express');
   const recoveryRoutes =require("./routes/recoveryRoutes");
   const anonymousReportRoutes = require("./routes/anonymousReportRoutes");
   const chatRoutes = require("./routes/chatRoutes");
+  const adminVictimRoutes = require("./routes/adminVictimRoutes");
   dotenv.config();
   const app = express();
 
@@ -35,6 +36,7 @@ const express = require('express');
   app.use("/api/recovery", recoveryRoutes);
   app.use("/api/reports", anonymousReportRoutes);
   app.use("/api/chat", chatRoutes);
+  app.use("/api/admin/victims", adminVictimRoutes);
   app.use(errorHandler);
   
 

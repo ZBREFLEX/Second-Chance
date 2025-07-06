@@ -839,21 +839,18 @@ tbody td {
 }
 
 .table-action {
-  width: 28px;
-  height: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  background: transparent;
   border: none;
-  border-radius: var(--border-radius);
   cursor: pointer;
-  transition: var(--transition);
+  color: #333;
+  margin: 0 4px;
+  padding: 4px;
 }
 
-.table-action.view {
-  background-color: rgba(59, 130, 246, 0.1);
-  color: var(--info-color);
+.table-action:hover {
+  color: #007bff;
 }
+
 
 .table-action.edit {
   background-color: rgba(245, 158, 11, 0.1);
