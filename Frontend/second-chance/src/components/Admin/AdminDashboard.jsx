@@ -40,8 +40,8 @@ const AdminDashboard = () => {
   const [growthPercent, setGrowthPercent] = useState(0);
   const [recentReports, setRecentReports] = useState([]);
   const [activeCases, setActiveCases] = useState(0);
-const [recoveries, setRecoveries] = useState(0);
-const [totalReports, setTotalReports] = useState(0);
+  const [recoveries, setRecoveries] = useState(0);
+  const [totalReports, setTotalReports] = useState(0);
 
   /* ────────────────────────
         AUTH + DATA FETCH
@@ -54,42 +54,51 @@ const [totalReports, setTotalReports] = useState(0);
 
     const headers = { headers: { Authorization: `Bearer ${token}` } };
 
-    Promise.all([
-  axios.get("http://localhost:5000/api/stats/user-stats", headers),
-  axios.get("http://localhost:5000/api/reports/reports/recent", headers),
-  axios.get("http://localhost:5000/api/reports/reports/stats", headers),
-])
-.then(([userRes, reportRes, statsRes]) => {
-  setTotalUsers(userRes.data.totalUsers);
-  setGrowthPercent(userRes.data.growthPercent);
-  setRecentReports(reportRes.data);
-  setTotalReports(statsRes.data.totalReports);
-  setActiveCases(statsRes.data.activeCases);
-  setRecoveries(statsRes.data.recoveries);
-})
-.catch((err) => {
-  console.error("Dashboard fetch error:", err);
-  
-  // Use mock data if API fails
-  setTotalUsers(24);
-  setGrowthPercent(8);
-  setRecentReports([
-    { id: "R-1001", district: "Ernakulam", type: "drugSale", status: "Pending", date: "2023-05-17" },
-    { id: "R-1002", district: "Kollam", type: "drugUse", status: "Investigating", date: "2023-05-16" },
-    { id: "R-1003", district: "Thrissur", type: "suspiciousActivity", status: "Resolved", date: "2023-05-15" },
-    { id: "R-1004", district: "Kozhikode", type: "drugHotspot", status: "Pending", date: "2023-05-14" },
-    { id: "R-1005", district: "Kottayam", type: "concernedPerson", status: "Investigating", date: "2023-05-13" }
-  ]);
-  setTotalReports(1245);
-  setActiveCases(876);
-  setRecoveries(369);
-})
+    // Fetch user stats
+    axios.get("http://localhost:5000/api/stats/user-stats", headers)
+      .then(response => {
+        setTotalUsers(response.data.totalUsers || 24);
+        setGrowthPercent(response.data.growthPercent || 8);
+      })
+      .catch(error => {
+        console.error("Error fetching user stats:", error);
+        // Use fallback data
+        setTotalUsers(24);
+        setGrowthPercent(8);
+      });
 
-        if (err.response && (err.response.status === 401 || err.response.status === 403)) {
-          localStorage.removeItem("adminToken");
-          localStorage.removeItem("adminUser");
-          navigate("/admin/login");
-        }
+    // Fetch recent reports
+    axios.get("http://localhost:5000/api/reports/reports/recent", headers)
+      .then(response => {
+        setRecentReports(response.data || []);
+      })
+      .catch(error => {
+        console.error("Error fetching recent reports:", error);
+        // Use fallback data
+        setRecentReports([
+          { id: "R-1001", district: "Ernakulam", type: "drugSale", status: "Pending", date: "2023-05-17" },
+          { id: "R-1002", district: "Kollam", type: "drugUse", status: "Investigating", date: "2023-05-16" },
+          { id: "R-1003", district: "Thrissur", type: "suspiciousActivity", status: "Resolved", date: "2023-05-15" },
+          { id: "R-1004", district: "Kozhikode", type: "drugHotspot", status: "Pending", date: "2023-05-14" },
+          { id: "R-1005", district: "Kottayam", type: "concernedPerson", status: "Investigating", date: "2023-05-13" }
+        ]);
+      });
+
+    // Fetch report stats
+    axios.get("http://localhost:5000/api/reports/reports/stats", headers)
+      .then(response => {
+        setTotalReports(response.data.totalReports || 1245);
+        setActiveCases(response.data.activeCases || 876);
+        setRecoveries(response.data.recoveries || 369);
+      })
+      .catch(error => {
+        console.error("Error fetching report stats:", error);
+        // Use fallback data
+        setTotalReports(1245);
+        setActiveCases(876);
+        setRecoveries(369);
+      });
+
   }, [navigate]);
 
   /* ────────────────────────
@@ -156,7 +165,7 @@ const [totalReports, setTotalReports] = useState(0);
           <h1>Admin Dashboard</h1>
           <div className="date-filter">
             <span>
-              <Clock size={16} /> Last updated: May 18, 2023, 10:30 AM
+              <Clock size={16} /> Last updated: {new Date().toLocaleString()}
             </span>
           </div>
         </div>
@@ -178,24 +187,25 @@ const [totalReports, setTotalReports] = useState(0);
           </div>
 
           <div className="stat-card">
-  <div className="stat-icon reports">
-    <FileText size={24} />
-  </div>
-  <div className="stat-content">
-    <h3>Reports Filed</h3>
-    <p className="stat-value">{totalReports.toLocaleString()}</p>
-    <p className="stat-change increase">
-      <ArrowUp size={14} /> 8% from last month
-    </p>
-  </div>
-</div>
+            <div className="stat-icon reports">
+              <FileText size={24} />
+            </div>
+            <div className="stat-content">
+              <h3>Reports Filed</h3>
+              <p className="stat-value">{totalReports.toLocaleString()}</p>
+              <p className="stat-change increase">
+                <ArrowUp size={14} /> 8% from last month
+              </p>
+            </div>
+          </div>
+          
           <div className="stat-card">
             <div className="stat-icon cases">
               <AlertTriangle size={24} />
             </div>
             <div className="stat-content">
               <h3>Active Cases</h3>
-              <p className="stat-value">1,245</p>
+              <p className="stat-value">{activeCases.toLocaleString()}</p>
               <p className="stat-change decrease">
                 <ArrowDown size={14} /> 3% from last month
               </p>
@@ -208,7 +218,7 @@ const [totalReports, setTotalReports] = useState(0);
             </div>
             <div className="stat-content">
               <h3>Recoveries</h3>
-              <p className="stat-value">876</p>
+              <p className="stat-value">{recoveries.toLocaleString()}</p>
               <p className="stat-change increase">
                 <ArrowUp size={14} /> 15% from last month
               </p>
