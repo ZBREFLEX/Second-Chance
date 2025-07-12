@@ -1,9 +1,17 @@
 const express = require("express");
 const router = express.Router();
-const recoveryController = require("../controllers/recoveryController");
+const {
+  getRecoveryData,
+  addCheckIn,
+  addJournalEntry,
+  addProgressEntry
+} = require('../controllers/recoveryController');
 
-router.get("/:userId", recoveryController.getRecoveryData);
-router.post("/:userId/checkin", recoveryController.addCheckIn);
-router.post("/:userId/journal", recoveryController.addJournal);
+
+router.get("/:userId", getRecoveryData);
+router.post("/:userId/journal", addJournalEntry);
+router.post("/:userId/checkin", addCheckIn);
+router.post('/:userId/progress', addProgressEntry);
+
 
 module.exports = router;

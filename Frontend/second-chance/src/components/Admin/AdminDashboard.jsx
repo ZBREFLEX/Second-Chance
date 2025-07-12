@@ -56,7 +56,7 @@ const [totalReports, setTotalReports] = useState(0);
 
     Promise.all([
   axios.get("http://localhost:5000/api/user-stats", headers),
-  axios.get("http://localhost:5000/api/reports/recent", headers),
+  axios.get("http://localhost:5000/api/report-insights/recent", headers),
   axios.get("http://localhost:5000/api/reports/stats", headers),
 ])
 .then(([userRes, reportRes, statsRes]) => {

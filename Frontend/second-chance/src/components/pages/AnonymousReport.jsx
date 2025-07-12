@@ -36,7 +36,8 @@ const handleStatusCheck = async (e) => {
   setChecking(true);
   setReportStatus(null);
   try {
-    const { data } = await axios.get(`http://localhost:000/api/reports/status/${checkId}`);
+    const { data } = await axios.get(`http://localhost:5000/api/recovery/${userId}`);
+
     setReportStatus(data);
   } catch (err) {
     setReportStatus({ error: err.response?.data?.message || "Report not found." });
@@ -69,7 +70,7 @@ const handleStatusCheck = async (e) => {
           contactOptional: formData.contactOptional,
         }
       );
-      setReportId(data.reportUuid || data.reportId);
+      setReportId(data.reportUuid); // always use the UUID
       setSubmitted(true);
       setFormData(emptyForm);          // reset
     } catch (err) {
@@ -330,7 +331,7 @@ const handleStatusCheck = async (e) => {
                 <h2>Report Submitted Successfully</h2>
                 <p>Thank you for helping to keep our communities safe.</p>
                 <div className="report-id-container">
-                  <p>Your Report ID:</p>
+                  <p>Your Report ID (UUID):</p>
                   <div className="report-id">{reportId}</div>
                   <p className="id-note">
                     Please save this ID for your reference. You can use it to check the status of your report or provide

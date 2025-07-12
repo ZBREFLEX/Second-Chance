@@ -1,84 +1,98 @@
 import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import {
+  Users,
   Search,
+  Filter,
   Download,
   RefreshCw,
+  UserPlus,
   Eye,
+  Edit,
+  Trash2,
   ChevronLeft,
   ChevronRight,
-  Trash2,
-  UserX,
-  UserPlus,
+  Shield,
+  ShieldCheck,
+  Heart,
 } from "lucide-react";
 import AdminLayout from "./AdminLayout";
 
 const AdminVictims = () => {
-  const [specialization, setSpecialization] = useState("");
-const [location, setLocation] = useState("");
   const [victims, setVictims] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
   const [searchTerm, setSearchTerm] = useState("");
-  const [sortBy, setSortBy] = useState("submitted_at");
-  const [sortOrder, setSortOrder] = useState("desc");
+  const [selectedVictims, setSelectedVictims] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [victimsPerPage] = useState(10);
-  const [filterAge, setFilterAge] = useState("all");
-  const [filterDrug, setFilterDrug] = useState("all");
 
-  const [selectedVictim, setSelectedVictim] = useState(null);
+  const [filterDrug, setFilterDrug] = useState("all");
+  const [filterAge, setFilterAge] = useState("all");
+
+  const [counselors, setCounselors] = useState([]);
   const [assignModal, setAssignModal] = useState(null);
   const [selectedCounselor, setSelectedCounselor] = useState("");
-  const [counselors, setCounselors] = useState([]);
-
-  const buildQuery = () => {
-    return new URLSearchParams({
-      search: searchTerm,
-      sortBy,
-      sortOrder,
-    }).toString();
-  };
+  const [viewModal, setViewModal] = useState(null);
 
   const loadVictims = useCallback(async () => {
     setLoading(true);
     try {
       const token = localStorage.getItem("adminToken");
-      const response = await axios.get(
-        `http://localhost:5000/api/admin/victims?${buildQuery()}`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      setVictims(Array.isArray(response.data) ? response.data : []);
+      const res = await axios.get("http://localhost:5000/api/admin/victims", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setVictims(res.data);
       setError(null);
-    } catch (e) {
-      console.error("Error loading victims:", e);
-      setError(e.message || "Failed to load victim details");
+    } catch (err) {
+      console.error("Error fetching victims:", err);
+      setError("Failed to fetch victim data");
     } finally {
       setLoading(false);
     }
-  }, [searchTerm, sortBy, sortOrder]);
+  }, []);
 
   const loadCounselors = async () => {
-  try {
-    const token = localStorage.getItem("adminToken");
-    const response = await axios.get(`http://localhost:5000/api/admin/victims/counselors`, {
-      params: {
-        specialization,
-        location,
-      },
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    setCounselors(response.data);
-  } catch (err) {
-    console.error("Error fetching counselors:", err);
-    // Add fallback data in case the API fails
-    setCounselors([
-      { id: 1, name: "Dr. Sarah Johnson", email: "sarah@example.com" },
-      { id: 2, name: "Dr. Michael Chen", email: "michael@example.com" }
-    ]);
-  }
-};
+    try {
+      const token = localStorage.getItem("adminToken");
+      const res = await axios.get("http://localhost:5000/api/admin/victims/counselors", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setCounselors(res.data);
+    } catch (err) {
+      console.error("Error fetching counselors:", err);
+    }
+  };
+
+  const assignCounselor = async () => {
+    if (!assignModal || !selectedCounselor) return;
+    try {
+      await axios.put("http://localhost:5000/api/admin/victims/assign", {
+        victim_id: assignModal.user_id,
+        counselor_id: selectedCounselor,
+      });
+      setAssignModal(null);
+      loadVictims();
+    } catch (err) {
+      console.error("Assignment failed:", err);
+    }
+  };
+
+  const deleteVictim = async (userId) => {
+    if (!window.confirm("Are you sure you want to delete this victim?")) return;
+    try {
+      await axios.delete("http://localhost:5000/api/admin/users", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+          "Content-Type": "application/json",
+        },
+        data: { ids: [userId] },
+      });
+      loadVictims();
+    } catch (err) {
+      console.error("Error deleting victim:", err);
+    }
+  };
 
   useEffect(() => {
     loadVictims();
@@ -86,85 +100,21 @@ const [location, setLocation] = useState("");
   }, [loadVictims]);
 
   const filteredVictims = victims.filter((v) => {
-    const inSearch = `${v.username} ${v.email} ${v.location}`.toLowerCase().includes(searchTerm.toLowerCase());
-    const inAge =
+    const matchSearch = `${v.username} ${v.email}`.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchAge =
       filterAge === "all" ||
       (filterAge === "<18" && v.age < 18) ||
       (filterAge === "18-30" && v.age >= 18 && v.age <= 30) ||
       (filterAge === "31-50" && v.age >= 31 && v.age <= 50) ||
       (filterAge === ">50" && v.age > 50);
-    const inDrug = filterDrug === "all" || v.drug_type === filterDrug;
-    return inSearch && inAge && inDrug;
-  });
-
-  const sortedVictims = [...filteredVictims].sort((a, b) => {
-    let aVal = a[sortBy];
-    let bVal = b[sortBy];
-    if (sortBy.includes("date") || sortBy.includes("at")) {
-      aVal = new Date(aVal);
-      bVal = new Date(bVal);
-    }
-    return sortOrder === "asc" ? aVal - bVal : bVal - aVal;
+    const matchDrug = filterDrug === "all" || v.drug_type === filterDrug;
+    return matchSearch && matchAge && matchDrug;
   });
 
   const indexOfLast = currentPage * victimsPerPage;
   const indexOfFirst = indexOfLast - victimsPerPage;
-  const currentVictims = sortedVictims.slice(indexOfFirst, indexOfLast);
-  const totalPages = Math.ceil(sortedVictims.length / victimsPerPage);
-
-  const exportCSV = () => {
-    const csv = [
-      ["Username", "Email", "Age", "Gender", "Location", "Drug Type", "Frequency", "Support", "Risk", "Submitted"],
-      ...filteredVictims.map((v) => [
-        v.username,
-        v.email,
-        v.age,
-        v.gender,
-        v.location,
-        v.drug_type,
-        v.frequency,
-        v.support_system,
-        v.risk_score,
-        new Date(v.submitted_at).toLocaleDateString("en-IN"),
-      ]),
-    ]
-      .map((row) => row.join(","))
-      .join("\n");
-
-    const blob = new Blob([csv], { type: "text/csv" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "victims.csv";
-    a.click();
-    URL.revokeObjectURL(url);
-  };
-
-  const deactivateVictim = async (userId) => {
-    if (!window.confirm("Are you sure you want to deactivate this victim?")) return;
-    await axios.put(`http://localhost:5000/api/admin/users/${userId}`, {
-      status: "inactive",
-    });
-    loadVictims();
-  };
-
-  const deleteVictim = async (userId) => {
-    if (!window.confirm("Are you sure you want to permanently delete this victim?")) return;
-    await axios.delete(`http://localhost:5000/api/admin/users`, {
-      data: { ids: [userId] },
-    });
-    loadVictims();
-  };
-
-  const assignCounselor = async () => {
-    if (!assignModal || !selectedCounselor) return;
-    await axios.put(`http://localhost:5000/api/admin/victims/assign-counselor`, {
-      victim_id: assignModal.user_id,
-      counselor_id: selectedCounselor,
-    });
-    setAssignModal(null);
-    loadVictims();
-  };
+  const currentVictims = filteredVictims.slice(indexOfFirst, indexOfLast);
+  const totalPages = Math.ceil(filteredVictims.length / victimsPerPage);
 
   return (
     <AdminLayout>
@@ -172,9 +122,6 @@ const [location, setLocation] = useState("");
         <div className="page-header">
           <h1>Victim Management</h1>
           <div className="header-actions">
-            <button className="action-button" onClick={exportCSV}>
-              <Download size={16} /> <span>Export</span>
-            </button>
             <button className="action-button" onClick={loadVictims}>
               <RefreshCw size={16} /> <span>Refresh</span>
             </button>
@@ -184,9 +131,12 @@ const [location, setLocation] = useState("");
         <div className="filters-bar">
           <div className="search-filter">
             <Search size={18} />
-            <input placeholder="Search victims…" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+            <input
+              placeholder="Search victims…"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
           </div>
-
           <div className="filter-select">
             <label>Age:</label>
             <select value={filterAge} onChange={(e) => setFilterAge(e.target.value)}>
@@ -197,13 +147,12 @@ const [location, setLocation] = useState("");
               <option value=">50">Above 50</option>
             </select>
           </div>
-
           <div className="filter-select">
             <label>Drug Type:</label>
             <select value={filterDrug} onChange={(e) => setFilterDrug(e.target.value)}>
               <option value="all">All</option>
               {[...new Set(victims.map((v) => v.drug_type))].map((type) => (
-                <option key={type}>{type}</option>
+                <option key={type} value={type}>{type}</option>
               ))}
             </select>
           </div>
@@ -220,6 +169,7 @@ const [location, setLocation] = useState("");
                 <th>Drug</th>
                 <th>Risk</th>
                 <th>Submitted</th>
+                <th>Counselor</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -233,15 +183,13 @@ const [location, setLocation] = useState("");
                   <td>{v.drug_type}</td>
                   <td>{v.risk_score ?? "N/A"}</td>
                   <td>{new Date(v.submitted_at).toLocaleDateString()}</td>
+                  <td>{v.counselor_name ?? "Not Assigned"}</td>
                   <td>
-                    <button className="table-action view" onClick={() => setSelectedVictim(v)}>
+                    <button className="table-action" onClick={() => setViewModal(v)}>
                       <Eye size={16} />
                     </button>
                     <button className="table-action" onClick={() => setAssignModal(v)}>
                       <UserPlus size={16} />
-                    </button>
-                    <button className="table-action" onClick={() => deactivateVictim(v.user_id)}>
-                      <UserX size={16} />
                     </button>
                     <button className="table-action delete" onClick={() => deleteVictim(v.user_id)}>
                       <Trash2 size={16} />
@@ -260,41 +208,13 @@ const [location, setLocation] = useState("");
           <span>
             Page {currentPage} of {totalPages}
           </span>
-          <button disabled={currentPage === totalPages} onClick={() => setCurrentPage(currentPage + 1)}>
+          <button
+            disabled={currentPage === totalPages}
+            onClick={() => setCurrentPage(currentPage + 1)}
+          >
             <ChevronRight size={16} />
           </button>
         </div>
-
-        {selectedVictim && (
-          <div className="modal">
-            <div className="modal-content">
-              <h2>Victim Profile</h2>
-              <p><strong>Username:</strong> {selectedVictim.username}</p>
-              <p><strong>Email:</strong> {selectedVictim.email}</p>
-              <p><strong>Age:</strong> {selectedVictim.age}</p>
-              <p><strong>Gender:</strong> {selectedVictim.gender}</p>
-              <p><strong>Location:</strong> {selectedVictim.location}</p>
-              <p><strong>Drug Type:</strong> {selectedVictim.drug_type}</p>
-              <p><strong>Frequency:</strong> {selectedVictim.frequency}</p>
-              <p><strong>Support:</strong> {selectedVictim.support_system}</p>
-              <p><strong>Risk Score:</strong> {selectedVictim.risk_score}</p>
-              <button className="modal-close" onClick={() => setSelectedVictim(null)}>Close</button>
-              <select value={specialization} onChange={(e) => setSpecialization(e.target.value)}>
-  <option value="">All Specializations</option>
-  <option value="drug-abuse">Drug Abuse</option>
-  <option value="mental-health">Mental Health</option>
-</select>
-
-<select value={location} onChange={(e) => setLocation(e.target.value)}>
-  <option value="">All Locations</option>
-  <option value="Kerala">Kerala</option>
-  <option value="Mumbai">Mumbai</option>
-</select>
-
-<button onClick={loadCounselors}>Filter Counselors</button>
-            </div>
-          </div>
-        )}
 
         {assignModal && (
           <div className="modal">
@@ -312,6 +232,32 @@ const [location, setLocation] = useState("");
               <div className="modal-actions">
                 <button className="modal-close" onClick={() => setAssignModal(null)}>Cancel</button>
                 <button className="modal-confirm" disabled={!selectedCounselor} onClick={assignCounselor}>Assign</button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {viewModal && (
+          <div className="modal">
+            <div className="modal-content">
+              <h2>Victim Details</h2>
+              <ul>
+                <li><strong>Username:</strong> {viewModal.username}</li>
+                <li><strong>Email:</strong> {viewModal.email}</li>
+                <li><strong>Age:</strong> {viewModal.age}</li>
+                <li><strong>Gender:</strong> {viewModal.gender}</li>
+                <li><strong>Location:</strong> {viewModal.location}</li>
+                <li><strong>Occupation:</strong> {viewModal.occupation}</li>
+                <li><strong>Drug Type:</strong> {viewModal.drug_type}</li>
+                <li><strong>Frequency:</strong> {viewModal.frequency}</li>
+                <li><strong>Last Use Date:</strong> {viewModal.last_use_date}</li>
+                <li><strong>Mental Health Issues:</strong> {viewModal.mental_health_issues}</li>
+                <li><strong>Physical Health Issues:</strong> {viewModal.physical_health_issues}</li>
+                <li><strong>Support System:</strong> {viewModal.support_system}</li>
+                <li><strong>Risk Score:</strong> {viewModal.risk_score}</li>
+              </ul>
+              <div className="modal-actions">
+                <button className="modal-close" onClick={() => setViewModal(null)}>Close</button>
               </div>
             </div>
           </div>

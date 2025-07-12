@@ -11,6 +11,6 @@ const {
 router.post('/anonymous', submitAnonymousReport);
 router.get('/status/:uuid', getReportStatus);
 router.get('/reports/recent', verifyAdmin, getRecentReports);
-router.get("/reports/stats", verifyToken, getReportStats);
+router.get('/reports/stats', verifyToken, getReportStats);
 
 module.exports = router;
